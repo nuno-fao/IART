@@ -1,6 +1,10 @@
-UI/Board.java
- UI.Board
-App.java
- App
+board/Position.java
+ board.Position
+board/Board.java
+ board.Board
+board/Square.java
+ board.Square
 UI/UI.java
  UI.UI
+App.java
+ App

@@ -12,7 +12,18 @@ public class Square {
     }
 
     public void paint(){
-
+        painted = true;
     }
 
+    public boolean isPainted() {
+        return painted;
+    }
+
+    public int getAquarium() {
+        return aquarium;
+    }
+
+    public String getCmdOutput(){
+        return aquarium + (painted ? "F " : "  ");
+    }
 }
