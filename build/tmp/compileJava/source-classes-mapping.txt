@@ -2,9 +2,12 @@ board/Position.java
  board.Position
 board/Board.java
  board.Board
+Solver.java
+ Solver
 board/Square.java
  board.Square
-UI/UI.java
- UI.UI
 App.java
  App
+UI/View.java
+ UI.Rects
+ UI.View
