@@ -1,28 +1,18 @@
 package board;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class Board {
     int width,height;
     List<Integer> horizontalCount,verticalCount;
     List<List<Square>> matrix = new ArrayList<>();
+    private Map<Integer,Aquarium> aquariums= new HashMap<>();
 
 
     public Board(int width, int height, List<Integer> horizontalCount, List<Integer> verticalCount) {
-        this.width = width;
-        this.height = height;
-        this.horizontalCount = horizontalCount;
-        this.verticalCount = verticalCount;
-        for (int i = 0; i < height ;i++){
-            matrix.add(new ArrayList<>());
-            for(int j = 0; j < width ; j++){
-                matrix.get(i).add(null);
-            }
-        }
-    }
-
-    public Board(Board board) {
         this.width = width;
         this.height = height;
         this.horizontalCount = horizontalCount;
@@ -39,14 +29,26 @@ public class Board {
         return matrix;
     }
 
-
     public void readBoard(String s){
         String []lines = s.split(";");
         for (int y = 0; y < lines.length; y++) {
             String []pos = lines[y].split(" ");
             for(int x = 0; x < pos.length; x++){
-                matrix.get(y).set(x,new Square(new Position(x,y),false, Integer.parseInt(pos[x])));
+                Square tempSquare = new Square(new Position(x,y),false, Integer.parseInt(pos[x]));
+                Aquarium tempAquarium;
+                if(!aquariums.containsKey(tempSquare.getAquariumIdentifier())){
+                     tempAquarium = new Aquarium();
+                    aquariums.put(tempSquare.getAquariumIdentifier(),tempAquarium);
+                }
+                else {
+                    tempAquarium = aquariums.get(tempSquare.getAquariumIdentifier());
+                }
+                tempAquarium.addSquare(tempSquare);
+                matrix.get(y).set(x,tempSquare);
             }
+        }
+        for (Aquarium a:aquariums.values()) {
+            a.process();
         }
     }
     public void setSol(String s){
@@ -74,4 +76,10 @@ public class Board {
         }
         return true;
     }
+
+    public Map<Integer, Aquarium> getAquariums() {
+        return aquariums;
+    }
+
+
 }

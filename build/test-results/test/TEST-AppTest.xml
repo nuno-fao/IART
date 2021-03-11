@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="AppTest" tests="1" skipped="1" failures="0" errors="0" timestamp="2021-03-03T17:01:46" hostname="miguel-ThinkPad-X1-Carbon-Gen-8" time="346.623">
+<testsuite name="AppTest" tests="1" skipped="1" failures="0" errors="0" timestamp="2021-03-11T18:25:14" hostname="miguel-ThinkPad-X1-Carbon-Gen-8" time="36.411">
   <properties/>
-  <testcase name="Test2()" classname="AppTest" time="346.623">
+  <testcase name="Test4()" classname="AppTest" time="36.411">
     <skipped/>
   </testcase>
   <system-out><![CDATA[]]></system-out>

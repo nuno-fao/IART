@@ -15,6 +15,7 @@ public class App {
                         "2 2 4 1 3 3;" +
                         "5 2 4 1 3 3;" +
                         "5 4 4 4 4 4;";
+
         String sol = "1 1 1 0 0 0;" +
                 "1 0 0 0 0 0;" +
                 "1 1 0 0 0 0;" +
@@ -28,7 +29,7 @@ public class App {
         List<Integer> v = new ArrayList<>(Arrays.asList(2,2,2));
         a.board = new Board(6,6,h,v);
         a.board.readBoard(board);
-        a.board.setSol(sol);
+        //a.board.setSol(sol);
 
 
         View view = new View(400,400,a.board);

@@ -5,11 +5,6 @@ import board.Square;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
-import java.awt.geom.Ellipse2D;
 import java.awt.geom.Rectangle2D;
 import java.util.List;
 
@@ -88,7 +83,7 @@ class Rects extends JPanel
             for (int x = 0; x < board.getMatrix().get(0).size() -1 ; x++) {
                 int l_x = (int) (w+w*x*1.1+5+w * 0.01);
                 int l_y = (int) (h*y*1.1+5);
-                if(board.getMatrix().get(y).get(x).getAquarium() != board.getMatrix().get(y).get(x+1).getAquarium()) {
+                if(board.getMatrix().get(y).get(x).getAquariumIdentifier() != board.getMatrix().get(y).get(x+1).getAquariumIdentifier()) {
                     drawRectangle(g, Color.black, l_x, l_y, w * 0.08, h);
                 }
                 else {
@@ -102,7 +97,7 @@ class Rects extends JPanel
             for (int x = 0; x < board.getMatrix().get(0).size() ; x++) {
                 int l_x = (int) (w*x*1.1+5);
                 int l_y = (int) (h + h*y*1.1+5+ h*0.01);
-                if(board.getMatrix().get(y).get(x).getAquarium() != board.getMatrix().get(y+1).get(x).getAquarium()) {
+                if(board.getMatrix().get(y).get(x).getAquariumIdentifier() != board.getMatrix().get(y+1).get(x).getAquariumIdentifier()) {
                     drawRectangle(g, Color.black,l_x, l_y, w*1, h*0.08);
                 }
                 else {

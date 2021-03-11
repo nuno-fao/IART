@@ -3,12 +3,12 @@ package board;
 public class Square {
     Position pos;
     boolean painted;
-    int aquarium;
+    int aquariumIdentifier;
 
-    public Square(Position pos, boolean painted,int aquarium) {
+    public Square(Position pos, boolean painted,int aquariumIdentifier) {
         this.pos = pos;
         this.painted = painted;
-        this.aquarium = aquarium;
+        this.aquariumIdentifier = aquariumIdentifier;
     }
 
     public void paint(){
@@ -19,11 +19,27 @@ public class Square {
         return painted;
     }
 
-    public int getAquarium() {
-        return aquarium;
+    public int getAquariumIdentifier() {
+        return aquariumIdentifier;
     }
 
     public String getCmdOutput(){
-        return aquarium + (painted ? "F " : "  ");
+        return aquariumIdentifier + (painted ? "F " : "  ");
+    }
+
+    public Position getPos() {
+        return pos;
+    }
+
+    public void setPos(Position pos) {
+        this.pos = pos;
+    }
+
+    public void setPainted(boolean painted) {
+        this.painted = painted;
+    }
+
+    public void setAquariumIdentifier(int aquariumIdentifier) {
+        this.aquariumIdentifier = aquariumIdentifier;
     }
 }

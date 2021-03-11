@@ -1,5 +1,6 @@
 import UI.View;
 import board.Board;
+import board.Level;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
@@ -24,7 +25,6 @@ class AppTest {
         Board toSolve = new Board(6,6, h , v);
         toSolve.readBoard(board);
         Board solution = Solver.solve(toSolve);
-
 
         Board original = new Board(6,6, h , v);
         original.readBoard(board);
@@ -63,8 +63,56 @@ class AppTest {
         Board toSolve = new Board(15,15, h , v);
         toSolve.readBoard(board);
         Board solution = Solver.solve(toSolve);
+    }
 
-        new View(1000,1000,toSolve);
-        while (1==1){}
+    @Test
+    public void test3(){
+        String board =
+                        "1 2;"+
+                        "1 2;";
+
+        List<Integer> h = new ArrayList<>(Arrays.asList(4, 5));
+        List<Integer> v = new ArrayList<>(Arrays.asList(3, 1));
+
+        Board toSolve = new Board(2,2, h , v);
+        toSolve.readBoard(board);
+        assertEquals(2,toSolve.getAquariums().get(1).getLevels().size());
+        assertEquals(toSolve.getAquariums().get(1).getLevels().get(0),toSolve.getAquariums().get(1).getLevels().get(1).getNextLevel());
+    }
+
+    @Test
+    void Test4(){
+        String board =
+                "0 0 0 1 1 1;" +
+                        "2 1 1 1 1 3;" +
+                        "2 2 1 1 1 3;" +
+                        "2 2 4 1 3 3;" +
+                        "5 2 4 1 3 3;" +
+                        "5 4 4 4 4 4;";
+        List<Integer> h = new ArrayList<>(Arrays.asList(4, 5, 3, 3, 2, 2));
+        List<Integer> v = new ArrayList<>(Arrays.asList(3, 1, 2, 3, 5, 5));
+
+        Board toSolve = new Board(6,6, h , v);
+        toSolve.readBoard(board);
+        Board solution = Solver.solve(toSolve);
+
+        Board original = new Board(6,6, h , v);
+        original.readBoard(board);
+        original.setSol(
+                "0 0 0 0 0 0;" +
+                        "0 0 0 0 0 0;" +
+                        "0 0 0 0 0 0;" +
+                        "0 0 0 0 0 0;" +
+                        "1 0 0 0 0 0;" +
+                        "1 0 0 0 0 0;");
+
+        solution.getAquariums().get(1).getLevels().get(4).paint();
+
+        //assertEquals(original,solution);
+
+        View view = new View(400,400,solution);
+
+        while (true){}
+
     }
 }
