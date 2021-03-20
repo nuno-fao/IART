@@ -60,6 +60,7 @@ class AppTest {
         List<Integer> h = new ArrayList<>(Arrays.asList(4, 5, 3, 3, 2, 2));
         List<Integer> v = new ArrayList<>(Arrays.asList(3, 1, 2, 3, 5, 5));
 
+
         Board toSolve = new Board(15,15, h , v);
         toSolve.readBoard(board);
         Board solution = Solver.solve(toSolve);

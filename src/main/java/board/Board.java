@@ -25,6 +25,14 @@ public class Board {
         }
     }
 
+    public List<Integer> getHorizontalCount() {
+        return horizontalCount;
+    }
+
+    public List<Integer> getVerticalCount() {
+        return verticalCount;
+    }
+
     public List<List<Square>> getMatrix() {
         return matrix;
     }

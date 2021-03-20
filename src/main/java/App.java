@@ -25,8 +25,8 @@ public class App {
 
         App a = new App();
 
-        List<Integer> h = new ArrayList<>(Arrays.asList(4, 5, 3));
-        List<Integer> v = new ArrayList<>(Arrays.asList(2,2,2));
+        List<Integer> h = new ArrayList<>(Arrays.asList(4, 5, 3, 3, 2, 2));
+        List<Integer> v = new ArrayList<>(Arrays.asList(3, 1, 2, 3, 5, 5));
         a.board = new Board(6,6,h,v);
         a.board.readBoard(board);
         a.board.setSol(sol);
