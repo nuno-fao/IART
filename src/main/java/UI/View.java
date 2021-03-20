@@ -52,16 +52,18 @@ class Rects extends JPanel
         super.paintComponent(g);
         //Setup background
 
+        Color borderColor = Color.BLACK;
 
         int amountH = (int) ((h-10) / (board.getMatrix().size()+(board.getMatrix().get(0).size()-1)*0.1));
         int amountW = (int) ((w-10) / (board.getMatrix().get(0).size()+(board.getMatrix().get(0).size()-1)*0.1));
-        painMainSquares(g,amountW,amountH);
-        painRightSquares(g,(int) (amountW),(int) (amountH));
-        painDownSquares(g,(int) (amountW),(int) (amountH));
+        paintMainSquares(g,amountW,amountH);
+        paintRightSquares(g,(int) (amountW),(int) (amountH),borderColor);
+        paintDownSquares(g,(int) (amountW),(int) (amountH),borderColor);
+        paintBorders(g,(int) (amountW),(int) (amountH),borderColor);
 
     }
 
-    private  void painMainSquares(Graphics g,int w,int h){
+    private  void paintMainSquares(Graphics g,int w,int h){
         int x = 0;
         int y = 0;
         for (List<Square> lines: board.getMatrix()) {
@@ -70,42 +72,52 @@ class Rects extends JPanel
                 int l_x = (int) (w*x*1.1+5);
                 int l_y = (int) (h*y*1.1+5);
                 if(!s.isPainted())
-                    drawRectangle(g, color,l_x, l_y, w, h);
+                    drawRectangle(g, color,l_x-2.5, l_y-2.5, w+5, h+5);
                 else
-                    drawRectangle(g, Color.cyan,l_x, l_y, w, h);
+                    drawRectangle(g, Color.cyan,l_x-2.5, l_y-2.5, w+5, h+5);
                 x++;
             }
             y++;
         }
     }
-    private  void painRightSquares(Graphics g,int w,int h){
+
+    private void paintBorders(Graphics g,int w,int h, Color border){
+        drawRectangle(g,border,0,0,board.getMatrix().get(0).size()*(w+5) + 10,h * 0.08);
+        drawRectangle(g,border,0,board.getMatrix().size() * (h+5) + 5,board.getMatrix().get(0).size()*(w+5) + 10,h * 0.08);
+
+        drawRectangle(g,border,0,0,w * 0.08, board.getMatrix().size()*(h+5) + 10);
+        drawRectangle(g,border,board.getMatrix().get(0).size() * (w+5) + 5,0,w * 0.08, board.getMatrix().size()*(h+5) + 10);
+    }
+
+    private  void paintRightSquares(Graphics g,int w,int h,Color border){
         for (int y = 0; y < board.getMatrix().size(); y++) {
             for (int x = 0; x < board.getMatrix().get(0).size() -1 ; x++) {
-                int l_x = (int) (w+w*x*1.1+5+w * 0.01);
-                int l_y = (int) (h*y*1.1+5);
+                int l_x = (int) (w+w*x*1.1+5+ w * 0.02);
+                int l_y = (int) (h*y*1.1);
                 if(board.getMatrix().get(y).get(x).getAquariumIdentifier() != board.getMatrix().get(y).get(x+1).getAquariumIdentifier()) {
-                    drawRectangle(g, Color.black, l_x, l_y, w * 0.08, h);
+                    drawRectangle(g, border, l_x, l_y, w * 0.08, h + 10);
                 }
                 else {
-                    drawRectangle(g, color, l_x, l_y, w * 0.08, h);
+                    //drawRectangle(g, background, l_x, l_y + 5, w * 0.08, h);
                 }
             }
         }
     }
-    private  void painDownSquares(Graphics g,int w,int h){
+
+    private  void paintDownSquares(Graphics g,int w,int h,Color border) {
         for (int y = 0; y < board.getMatrix().size() - 1; y++) {
-            for (int x = 0; x < board.getMatrix().get(0).size() ; x++) {
-                int l_x = (int) (w*x*1.1+5);
-                int l_y = (int) (h + h*y*1.1+5+ h*0.01);
-                if(board.getMatrix().get(y).get(x).getAquariumIdentifier() != board.getMatrix().get(y+1).get(x).getAquariumIdentifier()) {
-                    drawRectangle(g, Color.black,l_x, l_y, w*1, h*0.08);
-                }
-                else {
-                    drawRectangle(g, color,l_x, l_y, w*1, h*0.08);
+            for (int x = 0; x < board.getMatrix().get(0).size(); x++) {
+                int l_x = (int) (w * x * 1.1);
+                int l_y = (int) (h + h * y * 1.1 + 5 + h * 0.02);
+                if (board.getMatrix().get(y).get(x).getAquariumIdentifier() != board.getMatrix().get(y + 1).get(x).getAquariumIdentifier()) {
+                    drawRectangle(g, border, l_x , l_y, w + 10, h * 0.08);
+                } else {
+                   // drawRectangle(g, background, l_x + 5, l_y, w , h * 0.08);
                 }
             }
         }
     }
+
 
     private void drawRectangle(Graphics g, Color color, double x, double y, double width, double height) //centers rectangle
     {
