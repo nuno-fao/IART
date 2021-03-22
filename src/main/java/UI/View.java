@@ -61,18 +61,18 @@ class Rects extends JPanel
         paintDownSquares(g,(int) (amountW),(int) (amountH),borderColor);
         paintBorders(g,(int) (amountW),(int) (amountH),borderColor);
 
-        paintHorizontalNumbers(g,(int) (amountW),(int) (amountH));
+        paintNumbers(g,(int) (amountW),(int) (amountH));
 
     }
 
-    private  void paintHorizontalNumbers(Graphics g,int w, int h){
+    private  void paintNumbers(Graphics g,int w, int h){
         g.setFont(new Font("default", Font.BOLD, 16));
         //System.out.println(board.getHorizontalCount());
         for(int i=0;i<board.getHorizontalCount().size();i++){
-            g.drawString(board.getHorizontalCount().get(i).toString(),i*(w+6) + 30 , 18);
+            g.drawString(board.getHorizontalCount().get(i).toString(),i*(w+6) + 30, 18);
         }
         for(int i=0;i<board.getVerticalCount().size();i++){
-            g.drawString(board.getVerticalCount().get(i).toString(), 10 , i*(h+5) + 40);
+            g.drawString(board.getVerticalCount().get(i).toString(), 10 , i*(h+6) + 40);
         }
     }
 

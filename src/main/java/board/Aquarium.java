@@ -4,11 +4,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Aquarium {
-    private List<Level> levels = new ArrayList<>();
-    private List<Square> squares = new ArrayList<>();
+    private List<Level> levels;
+    private List<Square> squares;
 
     Aquarium(){
-
+        levels = new ArrayList<>();
+        squares = new ArrayList<>();
     }
 
     public void addSquare(Square s){
@@ -30,5 +31,15 @@ public class Aquarium {
 
     public List<Level> getLevels() {
         return levels;
+    }
+
+    public List<Level> getUnpaintedLevels(){
+        List<Level> out = new ArrayList<>();
+        for(Level level:levels){
+            if(!level.isPainted()){
+                out.add(level);
+            }
+        }
+        return out;
     }
 }
