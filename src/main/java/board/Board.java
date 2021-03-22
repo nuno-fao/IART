@@ -163,4 +163,12 @@ public class Board {
         return i.equals(number);
     }
 
+    public List<Level> getAllUnpaintedLevels(){
+        List<Level> out = new ArrayList<>();
+        for(Aquarium aquarium:aquariums){
+            out.addAll(aquarium.getUnpaintedLevels());
+        }
+        return out;
+    }
+
 }

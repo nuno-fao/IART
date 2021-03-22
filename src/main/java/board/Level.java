@@ -53,4 +53,9 @@ public class Level {
     public void addSquare(Square s){
         squares.add(s);
     }
+
+    public int getH(){
+        if(nextLevel==null) return squares.size();
+        return squares.size() + nextLevel.getH();
+    }
 }
