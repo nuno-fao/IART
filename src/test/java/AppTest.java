@@ -1,6 +1,4 @@
-import UI.View;
-import board.Board;
-import board.Level;
+import board.StateManager;
 import board.State;
 import org.junit.jupiter.api.Test;
 
@@ -203,8 +201,8 @@ class AppTest {
         List<Integer> h = new ArrayList<>(Arrays.asList(4, 5, 3, 3, 2, 2));
         List<Integer> v = new ArrayList<>(Arrays.asList(3, 1, 2, 3, 5, 5));
 
-        Board board = new Board(6,6, h , v);
-        State initial = board.readBoard(bs);
+        StateManager stateManager = new StateManager(6,6, h , v);
+        State initial = stateManager.readBoard(bs);
         State copy = initial.copy();
 
         assertNotEquals(copy, initial);

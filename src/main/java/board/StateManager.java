@@ -1,13 +1,14 @@
 package board;
 
+import java.io.IOException;
 import java.util.*;
 
-public class Board {
+public class StateManager {
     private int width,height;
     private List<Integer> horizontalCount,verticalCount;
 
 
-    public Board(int width, int height, List<Integer> horizontalCount, List<Integer> verticalCount) {
+    public StateManager(int width, int height, List<Integer> horizontalCount, List<Integer> verticalCount) {
         this.width = width;
         this.height = height;
         this.horizontalCount = horizontalCount;
@@ -62,17 +63,27 @@ public class Board {
         return new State(matrix,aquariums);
     }
 
-    /*
-    public void setSol(String s){
-        String []lines = s.split(";");
-        for (int y = 0; y < lines.length; y++) {
-            String []pos = lines[y].split(" ");
-            for(int x = 0; x < pos.length; x++){
-                if(pos[x].compareTo("1") == 0){
-                    matrix.get(y).get(x).paint();
+    public List<State> getLeaves(State state)  {
+
+        List<State> out = new ArrayList<>();
+
+        for(int i=0;i<state.getAquariums().size();i++){
+            for(int j=0;j<state.getAquariums().get(i).getLevels().size();j++){
+                if(!state.getAquariums().get(i).getLevels().get(j).isPainted()){
+                    try{
+                        State aux = state.copy();
+                        aux.paint(i,j);
+                        out.add(aux);
+
+                    }
+                    catch (IOException | ClassNotFoundException e){
+                        return null;
+                    }
                 }
             }
         }
-    }*/
+
+        return out;
+    }
 
 }

@@ -1,6 +1,6 @@
 package UI;
 
-import board.Board;
+import board.StateManager;
 import board.Square;
 import board.State;
 
@@ -13,7 +13,7 @@ public class View {
 
     private JFrame mainFrame;
 
-    public View(int width, int height, Board board, State currentState){
+    public View(int width, int height, StateManager stateManager, State currentState){
         //layout.setHgap(10);
         //layout.setVgap(10);
 
@@ -25,7 +25,7 @@ public class View {
         mainFrame.getContentPane().setPreferredSize(d);
         mainFrame.pack();
         mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        mainFrame.add(new Rects(mainFrame,board,currentState,width + 10,height + 10,Color.white));
+        mainFrame.add(new Rects(mainFrame, stateManager,currentState,width + 10,height + 10,Color.white));
         mainFrame.setVisible(true);
     }
 }
@@ -33,16 +33,16 @@ public class View {
 class Rects extends JPanel
 {
     State currentState;
-    Board board;
+    StateManager stateManager;
     Frame mainFrame;
     int w,h;
     Color color;
 
-    public Rects(JFrame frame,Board board,State currentState,int w,int h,Color color) {
+    public Rects(JFrame frame, StateManager stateManager, State currentState, int w, int h, Color color) {
         super();
         mainFrame = frame;
         this.currentState=currentState;
-        this.board=board;
+        this.stateManager = stateManager;
         this.w = w;
         this.h = h;
         this.color = color;
@@ -71,11 +71,11 @@ class Rects extends JPanel
     private  void paintNumbers(Graphics g,int w, int h){
         g.setFont(new Font("default", Font.BOLD, 16));
         //System.out.println(board.getHorizontalCount());
-        for(int i=0;i<board.getHorizontalCount().size();i++){
-            g.drawString(board.getHorizontalCount().get(i).toString(),i*(w+6) + 30, 18);
+        for(int i = 0; i< stateManager.getHorizontalCount().size(); i++){
+            g.drawString(stateManager.getHorizontalCount().get(i).toString(),i*(w+6) + 30, 18);
         }
-        for(int i=0;i<board.getVerticalCount().size();i++){
-            g.drawString(board.getVerticalCount().get(i).toString(), 10 , i*(h+6) + 40);
+        for(int i = 0; i< stateManager.getVerticalCount().size(); i++){
+            g.drawString(stateManager.getVerticalCount().get(i).toString(), 10 , i*(h+6) + 40);
         }
     }
 

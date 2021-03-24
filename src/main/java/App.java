@@ -1,5 +1,5 @@
 import UI.View;
-import board.Board;
+import board.StateManager;
 import board.State;
 
 import java.util.ArrayList;
@@ -7,7 +7,7 @@ import java.util.Arrays;
 import java.util.List;
 
 public class App {
-    Board board;
+    StateManager stateManager;
     public static void main(String[] args) {
         String board =
                 "0 0 0 1 1 1;" +
@@ -28,11 +28,11 @@ public class App {
 
         List<Integer> h = new ArrayList<>(Arrays.asList(4, 5, 3, 3, 2, 2));
         List<Integer> v = new ArrayList<>(Arrays.asList(3, 1, 2, 3, 5, 5));
-        a.board = new Board(6,6,h,v);
-        State currentState = a.board.readBoard(board);
+        a.stateManager = new StateManager(6,6,h,v);
+        State currentState = a.stateManager.readBoard(board);
         //a.board.setSol(sol);
 
 
-        View view = new View(400,400,a.board,currentState);
+        View view = new View(400,400,a.stateManager,currentState);
     }
 }

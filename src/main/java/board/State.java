@@ -189,4 +189,18 @@ public class State implements Serializable {
         return (State) in.readObject();
 
     }
+
+
+    public void setSol(String s){
+        String []lines = s.split(";");
+        for (int y = 0; y < lines.length; y++) {
+            String []pos = lines[y].split(" ");
+            for(int x = 0; x < pos.length; x++){
+                if(pos[x].compareTo("1") == 0){
+                    matrix.get(y).get(x).paint();
+                }
+            }
+        }
+    }
+
 }

@@ -1,7 +1,7 @@
-import board.Board;
+import board.StateManager;
 
 class Solver{
-    public static Board solve(Board board){
-        return board;
+    public static StateManager solve(StateManager stateManager){
+        return stateManager;
     }
 }
