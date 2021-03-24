@@ -1,9 +1,11 @@
 package board;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
-public class Aquarium {
+public class Aquarium implements Serializable {
     private List<Level> levels;
     private List<Square> squares;
 

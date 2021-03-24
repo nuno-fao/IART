@@ -2,6 +2,7 @@ package UI;
 
 import board.Board;
 import board.Square;
+import board.State;
 
 import javax.swing.*;
 import java.awt.*;
@@ -12,7 +13,7 @@ public class View {
 
     private JFrame mainFrame;
 
-    public View(int width, int height, Board board){
+    public View(int width, int height, Board board, State currentState){
         //layout.setHgap(10);
         //layout.setVgap(10);
 
@@ -24,22 +25,24 @@ public class View {
         mainFrame.getContentPane().setPreferredSize(d);
         mainFrame.pack();
         mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        mainFrame.add(new Rects(mainFrame,board,width + 10,height + 10,Color.white));
+        mainFrame.add(new Rects(mainFrame,board,currentState,width + 10,height + 10,Color.white));
         mainFrame.setVisible(true);
     }
 }
 
 class Rects extends JPanel
 {
+    State currentState;
     Board board;
     Frame mainFrame;
     int w,h;
     Color color;
 
-    public Rects(JFrame frame,Board board,int w,int h,Color color) {
+    public Rects(JFrame frame,Board board,State currentState,int w,int h,Color color) {
         super();
         mainFrame = frame;
-        this.board = board;
+        this.currentState=currentState;
+        this.board=board;
         this.w = w;
         this.h = h;
         this.color = color;
@@ -54,8 +57,8 @@ class Rects extends JPanel
 
         Color borderColor = Color.BLACK;
 
-        int amountH = (int) ((h-10) / (board.getMatrix().size()+(board.getMatrix().get(0).size()-1)*0.1));
-        int amountW = (int) ((w-10) / (board.getMatrix().get(0).size()+(board.getMatrix().get(0).size()-1)*0.1));
+        int amountH = (int) ((h-10) / (currentState.getMatrix().size()+(currentState.getMatrix().get(0).size()-1)*0.1));
+        int amountW = (int) ((w-10) / (currentState.getMatrix().get(0).size()+(currentState.getMatrix().get(0).size()-1)*0.1));
         paintMainSquares(g,amountW,amountH);
         paintRightSquares(g,(int) (amountW),(int) (amountH),borderColor);
         paintDownSquares(g,(int) (amountW),(int) (amountH),borderColor);
@@ -79,7 +82,7 @@ class Rects extends JPanel
     private  void paintMainSquares(Graphics g,int w,int h){
         int x = 0;
         int y = 0;
-        for (List<Square> lines: board.getMatrix()) {
+        for (List<Square> lines: currentState.getMatrix()) {
             x=0;
             for (Square s: lines) {
                 int l_x = (int) (w*x*1.1+5);
@@ -95,19 +98,19 @@ class Rects extends JPanel
     }
 
     private void paintBorders(Graphics g,int w,int h, Color border){
-        drawRectangle(g,border,0,0,board.getMatrix().get(0).size()*(w+5) + 10,h * 0.08);
-        drawRectangle(g,border,0,board.getMatrix().size() * (h+5) + 5,board.getMatrix().get(0).size()*(w+5) + 10,h * 0.08);
+        drawRectangle(g,border,0,0,currentState.getMatrix().get(0).size()*(w+5) + 10,h * 0.08);
+        drawRectangle(g,border,0,currentState.getMatrix().size() * (h+5) + 5,currentState.getMatrix().get(0).size()*(w+5) + 10,h * 0.08);
 
-        drawRectangle(g,border,0,0,w * 0.08, board.getMatrix().size()*(h+5) + 10);
-        drawRectangle(g,border,board.getMatrix().get(0).size() * (w+5) + 5,0,w * 0.08, board.getMatrix().size()*(h+5) + 10);
+        drawRectangle(g,border,0,0,w * 0.08, currentState.getMatrix().size()*(h+5) + 10);
+        drawRectangle(g,border,currentState.getMatrix().get(0).size() * (w+5) + 5,0,w * 0.08, currentState.getMatrix().size()*(h+5) + 10);
     }
 
     private  void paintRightSquares(Graphics g,int w,int h,Color border){
-        for (int y = 0; y < board.getMatrix().size(); y++) {
-            for (int x = 0; x < board.getMatrix().get(0).size() -1 ; x++) {
+        for (int y = 0; y < currentState.getMatrix().size(); y++) {
+            for (int x = 0; x < currentState.getMatrix().get(0).size() -1 ; x++) {
                 int l_x = (int) (w+w*x*1.1+5+ w * 0.02);
                 int l_y = (int) (h*y*1.1);
-                if(board.getMatrix().get(y).get(x).getAquariumIdentifier() != board.getMatrix().get(y).get(x+1).getAquariumIdentifier()) {
+                if(currentState.getMatrix().get(y).get(x).getAquariumIdentifier() != currentState.getMatrix().get(y).get(x+1).getAquariumIdentifier()) {
                     drawRectangle(g, border, l_x, l_y, w * 0.08, h + 10);
                 }
                 else {
@@ -118,11 +121,11 @@ class Rects extends JPanel
     }
 
     private  void paintDownSquares(Graphics g,int w,int h,Color border) {
-        for (int y = 0; y < board.getMatrix().size() - 1; y++) {
-            for (int x = 0; x < board.getMatrix().get(0).size(); x++) {
+        for (int y = 0; y < currentState.getMatrix().size() - 1; y++) {
+            for (int x = 0; x < currentState.getMatrix().get(0).size(); x++) {
                 int l_x = (int) (w * x * 1.1);
                 int l_y = (int) (h + h * y * 1.1 + 5 + h * 0.02);
-                if (board.getMatrix().get(y).get(x).getAquariumIdentifier() != board.getMatrix().get(y + 1).get(x).getAquariumIdentifier()) {
+                if (currentState.getMatrix().get(y).get(x).getAquariumIdentifier() != currentState.getMatrix().get(y + 1).get(x).getAquariumIdentifier()) {
                     drawRectangle(g, border, l_x , l_y, w + 10, h * 0.08);
                 } else {
                    // drawRectangle(g, background, l_x + 5, l_y, w , h * 0.08);

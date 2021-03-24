@@ -1,8 +1,10 @@
 import UI.View;
 import board.Board;
 import board.Level;
+import board.State;
 import org.junit.jupiter.api.Test;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -10,6 +12,7 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 
 class AppTest {
+    /*
     @Test
     void Test1(){
         String board =
@@ -185,6 +188,33 @@ class AppTest {
         //assertTrue(toSolve.isFinished());
         //assertEquals(toSolve.getSquaresLeft(),0);
         //assertEquals(toSolve.getAllUnpaintedLevels().size(),0);
+
+    }*/
+
+    @Test
+    void TestDeepCopy() throws IOException, ClassNotFoundException {
+        String bs =
+                "0 0 0 1 1 1;" +
+                        "2 1 1 1 1 3;" +
+                        "2 2 1 1 1 3;" +
+                        "2 2 4 1 3 3;" +
+                        "5 2 4 1 3 3;" +
+                        "5 4 4 4 4 4;";
+        List<Integer> h = new ArrayList<>(Arrays.asList(4, 5, 3, 3, 2, 2));
+        List<Integer> v = new ArrayList<>(Arrays.asList(3, 1, 2, 3, 5, 5));
+
+        Board board = new Board(6,6, h , v);
+        State initial = board.readBoard(bs);
+        State copy = initial.copy();
+
+        assertNotEquals(copy, initial);
+        copy.paint(1,3);
+        assertTrue(copy.getAquariums().get(1).getLevels().get(3).isPainted());
+        assertTrue(copy.getMatrix().get(2).get(3).isPainted());
+        assertTrue(copy.getAquariums().get(1).getLevels().get(2).isPainted());
+        assertFalse(initial.getAquariums().get(1).getLevels().get(2).isPainted());
+        assertFalse(initial.getMatrix().get(2).get(3).isPainted());
+
 
     }
 

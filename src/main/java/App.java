@@ -1,5 +1,6 @@
 import UI.View;
 import board.Board;
+import board.State;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -28,10 +29,10 @@ public class App {
         List<Integer> h = new ArrayList<>(Arrays.asList(4, 5, 3, 3, 2, 2));
         List<Integer> v = new ArrayList<>(Arrays.asList(3, 1, 2, 3, 5, 5));
         a.board = new Board(6,6,h,v);
-        a.board.readBoard(board);
-        a.board.setSol(sol);
+        State currentState = a.board.readBoard(board);
+        //a.board.setSol(sol);
 
 
-        View view = new View(400,400,a.board);
+        View view = new View(400,400,a.board,currentState);
     }
 }
