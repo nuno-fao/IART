@@ -42,4 +42,14 @@ public class Aquarium {
         }
         return out;
     }
+
+    public int getNotPainted(){
+        int aux = 0;
+        for(Level level : levels){
+            if(!level.isPainted()){
+                aux+=level.getNSquares();
+            }
+        }
+        return aux;
+    }
 }

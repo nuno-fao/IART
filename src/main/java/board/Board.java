@@ -1,9 +1,6 @@
 package board;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class Board {
     private int width,height;
@@ -129,38 +126,67 @@ public class Board {
         return out.toString();
     }
 
-    public boolean checkIfComplete(){
+    public boolean isFinished(){
+        return getSquaresLeft()==0;
+    }
+
+    //-1 - not respecting restrictions; 0 - finished; anything else - the number of squares left
+    public int getSquaresLeft(){
+
+        int out=0, aux;
         for(int i = 0;i<verticalCount.size();i++){
-            if(!checkHorizontalLine(verticalCount.get(i),matrix.get(i))){
-                return false;
+            aux = checkHorizontalLine(verticalCount.get(i),matrix.get(i));
+            if(aux==-1){
+                return -1;
             }
+            else{
+                out+=aux;
+            }
+
         }
 
         for(int i = 0;i<horizontalCount.size();i++){
-            if(!checkVerticalLine(horizontalCount.get(i),matrix,i)){
-                return false;
+            aux = checkVerticalLine(horizontalCount.get(i),matrix,i);
+            if(aux==-1){
+                return -1;
             }
         }
 
-        return true;
+        return out;
+
     }
 
-    public boolean checkHorizontalLine(Integer number, List<Square> line){
+    public int checkHorizontalLine(Integer number, List<Square> line){
         Integer i = 0;
         for(Square square:line){
             if(square.isPainted()) i++;
         }
-
-        return i.equals(number);
+        if(i>number){
+            return -1;
+        }
+        else if(i.equals(number)){
+            return 0;
+        }
+        else{
+            return number-i;
+        }
     }
 
-    public boolean checkVerticalLine(Integer number, List<List<Square>> columns, int col){
+    public int checkVerticalLine(Integer number, List<List<Square>> columns, int col){
         Integer i = 0;
         for(List<Square> list:columns){
             if(list.get(col).isPainted()) i++;
         }
 
-        return i.equals(number);
+        if(i>number){
+            return -1;
+        }
+        else if(i.equals(number)){
+            return 0;
+        }
+        else{
+            return number-i;
+        }
     }
 
     public List<Level> getAllUnpaintedLevels(){
@@ -168,6 +194,29 @@ public class Board {
         for(Aquarium aquarium:aquariums){
             out.addAll(aquarium.getUnpaintedLevels());
         }
+        return out;
+    }
+
+    public int getHeuristic(){
+        int out=0, nLeft = getSquaresLeft();
+
+        if(nLeft==-1 || nLeft==0){
+            return nLeft;
+        }
+        PriorityQueue<Integer> aux = new PriorityQueue<>(aquariums.size(),Comparator.reverseOrder());
+
+        for(Aquarium aquarium:aquariums){
+            aux.add(aquarium.getNotPainted());
+        }
+
+        int counter = 0;
+        while(counter<nLeft){
+            if(aux.peek()!=null) {
+                counter += aux.poll();
+                out++;
+            }
+        }
+
         return out;
     }
 

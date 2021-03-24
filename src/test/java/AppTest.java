@@ -133,7 +133,7 @@ class AppTest {
         Board toSolve = new Board(6,6, h , v);
         toSolve.readBoard(board);
 
-        assertFalse(toSolve.checkIfComplete());
+        assertFalse(toSolve.isFinished());
 
         toSolve.setSol("1 1 1 0 0 0;" +
                 "1 0 0 0 0 0;" +
@@ -149,7 +149,7 @@ class AppTest {
                 "0 1 1 1 1 1;" +
                 "0 1 1 1 1 1;");
 
-        assertTrue(toSolve.checkIfComplete());
+        assertTrue(toSolve.isFinished());
 
     }
 
@@ -168,11 +168,9 @@ class AppTest {
         Board toSolve = new Board(6,6, h , v);
         toSolve.readBoard(board);
 
-
-        assertEquals(toSolve.getAquariums().get(0).getLevels().get(0).getH(),3);
-        assertEquals(toSolve.getAquariums().get(1).getLevels().get(4).getH(),12);
-        assertEquals(toSolve.getAquariums().get(1).getLevels().get(3).getH(),9);
-
+        assertFalse(toSolve.isFinished());
+        assertEquals(toSolve.getSquaresLeft(),19);
+        assertEquals(toSolve.getHeuristic(),2);
         assertEquals(toSolve.getAllUnpaintedLevels().size(),19);
 
         toSolve.setSol("1 1 1 0 0 0;" +
@@ -182,7 +180,10 @@ class AppTest {
                 "0 1 1 1 1 1;" +
                 "0 1 1 1 1 1;");
 
-        //ainda não pinta o level, mas sim os squares portanto falha
+
+        //como ainda não pinta o level mas sim os squares falha
+        //assertTrue(toSolve.isFinished());
+        //assertEquals(toSolve.getSquaresLeft(),0);
         //assertEquals(toSolve.getAllUnpaintedLevels().size(),0);
 
     }

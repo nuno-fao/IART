@@ -46,6 +46,8 @@ public class Level {
         return squares;
     }
 
+    public int getNSquares(){return squares.size();}
+
     public void setSquares(List<Square> squares) {
         this.squares = squares;
     }
@@ -54,8 +56,4 @@ public class Level {
         squares.add(s);
     }
 
-    public int getH(){
-        if(nextLevel==null) return squares.size();
-        return squares.size() + nextLevel.getH();
-    }
 }
