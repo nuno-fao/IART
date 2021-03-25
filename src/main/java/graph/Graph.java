@@ -9,10 +9,15 @@ import java.util.Map;
 public class Graph {
     private Map<Vertex, List<Vertex>> adjVertices;
 
-    public Graph() { }
+    public Graph(Board initialState) {
+        adjVertices.put(new Vertex(initialState),new ArrayList<>());
+    }
 
-    void addVertex(Board board){
-        adjVertices.putIfAbsent(new Vertex(board),new ArrayList<>());
+    void addVertex(Board actualState,Board childState){
+        if (!adjVertices.containsKey(childState)){
+            adjVertices.put(new Vertex(childState),new ArrayList<>());
+            addEdge(actualState,childState);
+        }
     }
 
     void removeVertex(Board board){
@@ -21,9 +26,9 @@ public class Graph {
         adjVertices.remove(vertex);
     }
 
-    void addEdge(Board board1,Board board2){
-        Vertex vertex1 = new Vertex(board1);
-        Vertex vertex2 = new Vertex(board2);
+    void addEdge(Board actualState,Board childState){
+        Vertex vertex1 = new Vertex(actualState);
+        Vertex vertex2 = new Vertex(childState);
         adjVertices.get(vertex1).add(vertex2);
     }
 
@@ -36,7 +41,7 @@ public class Graph {
             adjToVertex1.remove(vertex2);
     }
 
-    List<Vertex> getAdjVertices(Board board) {
-        return adjVertices.get(new Vertex(board));
+    List<Vertex> getAdjVertices(Board actualState) {
+        return adjVertices.get(new Vertex(actualState));
     }
 }
