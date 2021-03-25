@@ -10,10 +10,22 @@ public class State implements Serializable {
 
     private List<List<Square>> matrix;
     private List<Aquarium> aquariums;
+    private int depth;
+    private int heuristic;
 
-    public State(List<List<Square>> matrix, List<Aquarium> aquariums) {
+    public int getDepth() {
+        return depth;
+    }
+
+    public int getHeuristic() {
+        return heuristic;
+    }
+
+    public State(List<List<Square>> matrix, List<Aquarium> aquariums, int depth) {
         this.matrix = matrix;
         this.aquariums = aquariums;
+        this.depth = depth;
+        this.heuristic= 999;//default value until it is updated;
     }
 
     public void setMatrix(List<List<Square>> matrix) {
@@ -39,7 +51,7 @@ public class State implements Serializable {
         State comp = (State) obj;
         for(int y = 0;y < this.getMatrix().size(); y++){
             for(int x = 0;x < this.getMatrix().get(0).size(); x++){
-                if(matrix.get(y).get(x).getCmdOutput() != comp.getMatrix().get(y).get(x).getCmdOutput())
+                if(!matrix.get(y).get(x).getCmdOutput().equals(comp.getMatrix().get(y).get(x).getCmdOutput()))
                 {
                     return false;
                 }
@@ -58,6 +70,7 @@ public class State implements Serializable {
         }
     }
 
+    //returns a list of all levels yet unpainted (every possible play)
     public List<Level> getPossibleSteps(){
         List<Level> out = new ArrayList<>();
         for(Aquarium aquarium:aquariums){
@@ -66,6 +79,8 @@ public class State implements Serializable {
         return out;
     }
 
+
+    //Builds and returns board string from the current state
     public String getState(){
         StringBuilder out = new StringBuilder();
         for (List<Square> squares : matrix) {
@@ -89,8 +104,8 @@ public class State implements Serializable {
         return getSquaresLeft(horizontalCount,verticalCount)==0;
     }
 
-    //-1 - not respecting restrictions; 0 - finished; anything else - the number of squares left
-    public int getSquaresLeft(List<Integer> horizontalCount,List<Integer> verticalCount){
+    //used for checking heuristic and game end. Returns -1 - not respecting restrictions; 0 - finished; anything else - the number of squares left
+    private int getSquaresLeft(List<Integer> horizontalCount,List<Integer> verticalCount){
 
         int out=0, aux;
         for(int i = 0;i<verticalCount.size();i++){
@@ -115,7 +130,8 @@ public class State implements Serializable {
 
     }
 
-    public int checkHorizontalLine(Integer number, List<Square> line){
+    //used for checking heuristic and game end
+    private int checkHorizontalLine(Integer number, List<Square> line){
         Integer i = 0;
         for(Square square:line){
             if(square.isPainted()) i++;
@@ -131,7 +147,8 @@ public class State implements Serializable {
         }
     }
 
-    public int checkVerticalLine(Integer number, List<List<Square>> columns, int col){
+    //used for checking heuristic and game end
+    private int checkVerticalLine(Integer number, List<List<Square>> columns, int col){
         Integer i = 0;
         for(List<Square> list:columns){
             if(list.get(col).isPainted()) i++;
@@ -148,15 +165,9 @@ public class State implements Serializable {
         }
     }
 
-    public List<Level> getAllUnpaintedLevels(){
-        List<Level> out = new ArrayList<>();
-        for(Aquarium aquarium:aquariums){
-            out.addAll(aquarium.getUnpaintedLevels());
-        }
-        return out;
-    }
 
-    public int getHeuristic(List<Integer> horizontalCount,List<Integer> verticalCount){
+    //returns heuristic for the current state. If -1 - invalid, if 0 - finished, anything else - the actual heuristic
+    public int updateHeuristic(List<Integer> horizontalCount, List<Integer> verticalCount){
         int out=0, nLeft = getSquaresLeft(horizontalCount,verticalCount);
 
         if(nLeft==-1 || nLeft==0){
@@ -179,6 +190,7 @@ public class State implements Serializable {
         return out;
     }
 
+    //deep copies the state
     public State copy() throws IOException, ClassNotFoundException {
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         ObjectOutputStream out = new ObjectOutputStream(outputStream);
@@ -190,7 +202,7 @@ public class State implements Serializable {
 
     }
 
-
+    //only used for testing
     public void setSol(String s){
         String []lines = s.split(";");
         for (int y = 0; y < lines.length; y++) {
@@ -201,6 +213,12 @@ public class State implements Serializable {
                 }
             }
         }
+    }
+
+    //increases depth and sets heuristic
+    public void updateCostAndHeuristic(List<Integer> horizontalCount, List<Integer> verticalCount){
+        this.depth++;
+        this.heuristic = updateHeuristic(horizontalCount,verticalCount);
     }
 
 }
