@@ -1,6 +1,9 @@
 package board;
 
-public class Square {
+import java.io.Serializable;
+import java.util.Objects;
+
+public class Square implements Serializable {
     Position pos;
     boolean painted;
     int aquariumIdentifier;
@@ -42,4 +45,5 @@ public class Square {
     public void setAquariumIdentifier(int aquariumIdentifier) {
         this.aquariumIdentifier = aquariumIdentifier;
     }
+
 }

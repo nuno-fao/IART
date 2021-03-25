@@ -1,8 +1,8 @@
-import UI.View;
-import board.Board;
-import board.Level;
+import board.StateManager;
+import board.State;
 import org.junit.jupiter.api.Test;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -10,6 +10,7 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 
 class AppTest {
+    /*
     @Test
     void Test1(){
         String board =
@@ -38,6 +39,7 @@ class AppTest {
         assertEquals(original,solution);
     }
 
+
     @Test
     void Test2(){
         String board =
@@ -59,6 +61,7 @@ class AppTest {
 
         List<Integer> h = new ArrayList<>(Arrays.asList(4, 5, 3, 3, 2, 2));
         List<Integer> v = new ArrayList<>(Arrays.asList(3, 1, 2, 3, 5, 5));
+
 
         Board toSolve = new Board(15,15, h , v);
         toSolve.readBoard(board);
@@ -115,4 +118,102 @@ class AppTest {
         while (true){}
 
     }
+
+    @Test
+    void TestStateAndComplete(){
+        String board =
+                "0 0 0 1 1 1;" +
+                        "2 1 1 1 1 3;" +
+                        "2 2 1 1 1 3;" +
+                        "2 2 4 1 3 3;" +
+                        "5 2 4 1 3 3;" +
+                        "5 4 4 4 4 4;";
+        List<Integer> h = new ArrayList<>(Arrays.asList(4, 5, 3, 3, 2, 2));
+        List<Integer> v = new ArrayList<>(Arrays.asList(3, 1, 2, 3, 5, 5));
+
+        Board toSolve = new Board(6,6, h , v);
+        toSolve.readBoard(board);
+
+        assertFalse(toSolve.isFinished());
+
+        toSolve.setSol("1 1 1 0 0 0;" +
+                "1 0 0 0 0 0;" +
+                "1 1 0 0 0 0;" +
+                "1 1 0 1 0 0;" +
+                "0 1 1 1 1 1;" +
+                "0 1 1 1 1 1;");
+
+        assertEquals(toSolve.getState(),"1 1 1 0 0 0;" +
+                "1 0 0 0 0 0;" +
+                "1 1 0 0 0 0;" +
+                "1 1 0 1 0 0;" +
+                "0 1 1 1 1 1;" +
+                "0 1 1 1 1 1;");
+
+        assertTrue(toSolve.isFinished());
+
+    }
+
+    @Test
+    void TestHAndUnpainted(){
+        String board =
+                "0 0 0 1 1 1;" +
+                        "2 1 1 1 1 3;" +
+                        "2 2 1 1 1 3;" +
+                        "2 2 4 1 3 3;" +
+                        "5 2 4 1 3 3;" +
+                        "5 4 4 4 4 4;";
+        List<Integer> h = new ArrayList<>(Arrays.asList(4, 5, 3, 3, 2, 2));
+        List<Integer> v = new ArrayList<>(Arrays.asList(3, 1, 2, 3, 5, 5));
+
+        Board toSolve = new Board(6,6, h , v);
+        toSolve.readBoard(board);
+
+        assertFalse(toSolve.isFinished());
+        assertEquals(toSolve.getSquaresLeft(),19);
+        assertEquals(toSolve.getHeuristic(),2);
+        assertEquals(toSolve.getAllUnpaintedLevels().size(),19);
+
+        toSolve.setSol("1 1 1 0 0 0;" +
+                "1 0 0 0 0 0;" +
+                "1 1 0 0 0 0;" +
+                "1 1 0 1 0 0;" +
+                "0 1 1 1 1 1;" +
+                "0 1 1 1 1 1;");
+
+
+        //como ainda não pinta o level mas sim os squares falha
+        //assertTrue(toSolve.isFinished());
+        //assertEquals(toSolve.getSquaresLeft(),0);
+        //assertEquals(toSolve.getAllUnpaintedLevels().size(),0);
+
+    }*/
+
+    @Test
+    void TestDeepCopy() throws IOException, ClassNotFoundException {
+        String bs =
+                "0 0 0 1 1 1;" +
+                        "2 1 1 1 1 3;" +
+                        "2 2 1 1 1 3;" +
+                        "2 2 4 1 3 3;" +
+                        "5 2 4 1 3 3;" +
+                        "5 4 4 4 4 4;";
+        List<Integer> h = new ArrayList<>(Arrays.asList(4, 5, 3, 3, 2, 2));
+        List<Integer> v = new ArrayList<>(Arrays.asList(3, 1, 2, 3, 5, 5));
+
+        StateManager stateManager = new StateManager(6,6, h , v);
+        State initial = stateManager.readBoard(bs);
+        State copy = initial.copy();
+
+        assertNotEquals(copy, initial);
+        copy.paint(1,3);
+        assertTrue(copy.getAquariums().get(1).getLevels().get(3).isPainted());
+        assertTrue(copy.getMatrix().get(2).get(3).isPainted());
+        assertTrue(copy.getAquariums().get(1).getLevels().get(2).isPainted());
+        assertFalse(initial.getAquariums().get(1).getLevels().get(2).isPainted());
+        assertFalse(initial.getMatrix().get(2).get(3).isPainted());
+
+
+    }
+
 }

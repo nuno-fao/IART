@@ -1,14 +1,17 @@
 package board;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
-public class Aquarium {
-    private List<Level> levels = new ArrayList<>();
-    private List<Square> squares = new ArrayList<>();
+public class Aquarium implements Serializable {
+    private List<Level> levels;
+    private List<Square> squares;
 
     Aquarium(){
-
+        levels = new ArrayList<>();
+        squares = new ArrayList<>();
     }
 
     public void addSquare(Square s){
@@ -30,5 +33,25 @@ public class Aquarium {
 
     public List<Level> getLevels() {
         return levels;
+    }
+
+    public List<Level> getUnpaintedLevels(){
+        List<Level> out = new ArrayList<>();
+        for(Level level:levels){
+            if(!level.isPainted()){
+                out.add(level);
+            }
+        }
+        return out;
+    }
+
+    public int getNotPainted(){
+        int aux = 0;
+        for(Level level : levels){
+            if(!level.isPainted()){
+                aux+=level.getNSquares();
+            }
+        }
+        return aux;
     }
 }

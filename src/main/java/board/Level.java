@@ -1,9 +1,11 @@
 package board;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
-public class Level {
+public class Level implements Serializable {
     private List<Square> squares = new ArrayList<>();
     private boolean painted = false;
     private Level nextLevel;
@@ -25,12 +27,12 @@ public class Level {
         this.nextLevel = level;
     }
 
-    public void paint(){
+    public void paint() {
         painted = true;
-        for (Square s: squares) {
+        for (Square s : squares) {
             s.paint();
         }
-        if(nextLevel != null)
+        if (nextLevel != null)
             nextLevel.paint();
     }
 
@@ -46,11 +48,16 @@ public class Level {
         return squares;
     }
 
+    public int getNSquares() {
+        return squares.size();
+    }
+
     public void setSquares(List<Square> squares) {
         this.squares = squares;
     }
 
-    public void addSquare(Square s){
+    public void addSquare(Square s) {
         squares.add(s);
     }
+
 }
