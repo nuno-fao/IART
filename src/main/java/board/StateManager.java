@@ -16,6 +16,8 @@ public class StateManager {
 
     }
 
+    public StateManager() {}
+
     public List<Integer> getHorizontalCount() {
         return horizontalCount;
     }

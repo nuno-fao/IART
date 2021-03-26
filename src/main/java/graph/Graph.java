@@ -1,47 +1,75 @@
 package graph;
 
-import board.Board;
+import board.State;
+import board.StateManager;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 public class Graph {
     private Map<Vertex, List<Vertex>> adjVertices;
+    private Vertex root; // graph root
+    private StateManager stateManager;
 
-    public Graph(Board initialState) {
-        adjVertices.put(new Vertex(initialState),new ArrayList<>());
+    public Graph(StateManager stateManager,State initialState) {
+        this.root = new Vertex(initialState);
+        this.stateManager = stateManager;
+        this.adjVertices = new HashMap<>();
+        this.adjVertices.put(this.root,new ArrayList<>());
     }
 
-    void addVertex(Board actualState,Board childState){
-        if (!adjVertices.containsKey(childState)){
-            adjVertices.put(new Vertex(childState),new ArrayList<>());
-            addEdge(actualState,childState);
+    public Vertex getRoot() {
+        return this.root;
+    }
+
+    /**
+     * from a given vertex generates its childs and adds them to the graph
+     * @param currentVertex vertex being analyzed
+     */
+    public void generateChilds(Vertex currentVertex){
+        List<State> childs = new StateManager().getLeaves(currentVertex.getState());
+        for (State child : childs) {
+            addVertex(currentVertex,child);
         }
     }
 
-    void removeVertex(Board board){
-        Vertex vertex = new Vertex(board);
-        adjVertices.values().stream().forEach(vertices -> vertices.remove(vertex));
-        adjVertices.remove(vertex);
+    private void addVertex(Vertex currentVertex,State childState){
+        if (!adjVertices.containsKey(childState)){
+            adjVertices.put(new Vertex(childState),new ArrayList<>());
+        }
+        addEdge(currentVertex,childState);
     }
 
-    void addEdge(Board actualState,Board childState){
-        Vertex vertex1 = new Vertex(actualState);
+    private void addEdge(Vertex vertex1,State childState){
         Vertex vertex2 = new Vertex(childState);
         adjVertices.get(vertex1).add(vertex2);
     }
 
-    void removeEdge(Board board1,Board board2){
-        Vertex vertex1 = new Vertex(board1);
-        Vertex vertex2 = new Vertex(board2);
-
-        List<Vertex> adjToVertex1 = adjVertices.get(vertex1);
-        if( adjToVertex1 !=null)
-            adjToVertex1.remove(vertex2);
+    /**
+     * cleans all the graph and adds the root node
+     */
+    public void resetGraph(){
+        this.adjVertices.clear();
+        this.adjVertices.put(this.root,new ArrayList<>());
     }
 
-    List<Vertex> getAdjVertices(Board actualState) {
-        return adjVertices.get(new Vertex(actualState));
+    /**
+     * from a given vertex verifies whether it has reached the solution
+     * @param currentVertex vertex being analyzed
+     * @return true if reached the solution, false otherwise
+     */
+    public boolean reachedToTheSolution(Vertex currentVertex){
+        return currentVertex.getState().isFinished(this.stateManager.getHorizontalCount(),this.stateManager.getVerticalCount());
+    }
+
+    /**
+     * from a given vertex it returns all of its children
+     * @param currentVertex vertex being analyzed
+     * @return list with all currentVertex childs
+     */
+    public List<Vertex> getAdjVertices(Vertex currentVertex) {
+        return adjVertices.get(currentVertex);
     }
 }

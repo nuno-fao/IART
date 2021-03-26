@@ -1,6 +1,7 @@
 import UI.View;
 import board.StateManager;
 import board.State;
+import graph.Graph;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -30,6 +31,7 @@ public class App {
         List<Integer> v = new ArrayList<>(Arrays.asList(3, 1, 2, 3, 5, 5));
         a.stateManager = new StateManager(6,6,h,v);
         State currentState = a.stateManager.readBoard(board);
+        Graph graph = new Graph(a.stateManager,currentState);
         //a.board.setSol(sol);
 
 

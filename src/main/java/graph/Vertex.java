@@ -1,14 +1,25 @@
 package graph;
 
-import board.Board;
+
+import board.State;
 
 import java.util.Objects;
 
 public class Vertex {
-    private Board board;
+    private State state;
+    private Boolean visited;
 
-    public Vertex(Board board) {
-        this.board = board;
+    public Vertex(State state) {
+        this.visited = false;
+        this.state = state;
+    }
+
+    public State getState() {
+        return state;
+    }
+
+    public Boolean getVisited() {
+        return visited;
     }
 
     @Override
@@ -16,11 +27,11 @@ public class Vertex {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Vertex vertex = (Vertex) o;
-        return board.equals(vertex.board);
+        return state.equals(vertex.state);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(board);
+        return Objects.hash(state);
     }
 }
