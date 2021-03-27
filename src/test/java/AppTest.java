@@ -240,6 +240,7 @@ class AppTest {
                 "1 1 0 1 0 0;" +
                 "0 1 1 1 1 1;" +
                 "0 1 1 1 1 1;");
+        System.out.println("Breath explored "+graph.getExploredStates()+" states and solution has depth of "+solution.getDepth());
     }
 
     @Test
@@ -266,6 +267,7 @@ class AppTest {
                 "1 1 0 1 0 0;" +
                 "0 1 1 1 1 1;" +
                 "0 1 1 1 1 1;");
+        System.out.println("Depth explored "+graph.getExploredStates()+" states and solution has depth of "+solution.getDepth());
     }
 
     @Test
@@ -292,6 +294,7 @@ class AppTest {
                 "1 1 0 1 0 0;" +
                 "0 1 1 1 1 1;" +
                 "0 1 1 1 1 1;");
+        System.out.println("Greedy explored "+graph.getExploredStates()+" states and solution has depth of "+solution.getDepth());
     }
 
     @Test
@@ -318,6 +321,7 @@ class AppTest {
                 "1 1 0 1 0 0;" +
                 "0 1 1 1 1 1;" +
                 "0 1 1 1 1 1;");
+        System.out.println("Djikstra explored "+graph.getExploredStates()+" states and solution has depth of "+solution.getDepth());
     }
 
     @Test
@@ -344,6 +348,7 @@ class AppTest {
                 "1 1 0 1 0 0;" +
                 "0 1 1 1 1 1;" +
                 "0 1 1 1 1 1;");
+        System.out.println("AStar explored "+graph.getExploredStates()+" states and solution has depth of "+solution.getDepth());
     }
 
 }

@@ -47,6 +47,10 @@ public class Graph {
         return out;
     }
 
+    public int getExploredStates(){
+        return pastStates.values().size();
+    }
+
     public void clear(){
         pastStates=new HashMap<>();
         statePriorityQueue=new PriorityQueue<>(comparator);
