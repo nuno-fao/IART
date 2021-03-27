@@ -20,9 +20,9 @@ public class View {
 
 
         mainFrame = new JFrame("Aquarium");
-        mainFrame.setSize(width+10,height+10);
+        mainFrame.setSize(width+200,height+5);
         Dimension d = new Dimension();
-        d.setSize(width + 10,height + 10);
+        d.setSize(width + 200,height + 5);
         mainFrame.getContentPane().setPreferredSize(d);
         mainFrame.pack();
         mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -39,6 +39,7 @@ class Rects extends JPanel {
     int w,h;
     Color color;
 
+
     public Rects(JFrame frame, StateManager stateManager, State currentState, int w, int h, Color color) {
         super();
         mainFrame = frame;
@@ -47,10 +48,39 @@ class Rects extends JPanel {
         this.w = w;
         this.h = h;
         this.color = color;
+
         setBackground(Color.darkGray);
         this.setFocusable(true);
         this.requestFocus();
         this.addMouseListener(new MouseClick());
+
+        setLayout(null);
+
+        JButton easy = new JButton("EASY");
+        easy.setBounds(w+15,40,150,50);
+        easy.addActionListener(new LevelChanger("1"));
+        add(easy);
+
+        JButton medium = new JButton("MEDIUM");
+        medium.setBounds(w+15,120,150,50);
+        medium.addActionListener(new LevelChanger("2"));
+        add(medium);
+
+        JButton hard = new JButton("HARD");
+        hard.setBounds(w+15,200,150,50);
+        hard.addActionListener(new LevelChanger("3"));
+        add(hard);
+
+        JButton hint = new JButton("HINT");
+        hint.setBounds(w+15,280,150,50);
+        hint.addActionListener(new Helper());
+        add(hint);
+
+        JButton reset = new JButton("RESET");
+        reset.setBounds(w+15,360,150,50);
+        reset.addActionListener(new Resetter());
+        add(reset);
+
     }
 
 
@@ -160,7 +190,35 @@ class Rects extends JPanel {
             int y=e.getY();
 
             stateManager.actOnClick(x,y);
+            revalidate();
             repaint();
+        }
+    }
+
+    private class Resetter implements ActionListener {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            System.out.println(e.toString());
+        }
+    }
+
+    private class LevelChanger implements ActionListener {
+        String level;
+
+        public LevelChanger(String level) {
+            this.level=level;
+        }
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            System.out.println(e.toString());
+        }
+    }
+
+    private class Helper implements ActionListener {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            System.out.println(e.toString());
         }
     }
 
