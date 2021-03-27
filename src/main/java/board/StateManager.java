@@ -6,6 +6,7 @@ import java.util.*;
 public class StateManager {
     private int width,height;
     private List<Integer> horizontalCount,verticalCount;
+    private State currentState;
 
 
     public StateManager(int width, int height, List<Integer> horizontalCount, List<Integer> verticalCount) {
@@ -63,7 +64,17 @@ public class StateManager {
             a.process();
         }
 
-        return new State(matrix,aquariums,0);
+        this.currentState = new State(matrix,aquariums,0);
+
+        return currentState;
+    }
+
+    public void actOnClick(int clickX, int clickY){
+        int i = (int) clickX/67;
+        int j = (int) clickY/67;
+        Square aux = currentState.getMatrix().get(j).get(i);
+        currentState.getAquariums().get(aux.getAquariumIdentifier()).squareIsClicked(aux);
+        currentState.increaseDepth();
     }
 
 }

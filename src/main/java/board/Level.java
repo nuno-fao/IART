@@ -36,6 +36,13 @@ public class Level implements Serializable {
             nextLevel.paint();
     }
 
+    public void unpaint() {
+        painted = false;
+        for (Square s : squares) {
+            s.unpaint();
+        }
+    }
+
     public boolean isPainted() {
         return painted;
     }

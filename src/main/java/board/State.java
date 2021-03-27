@@ -221,4 +221,8 @@ public class State implements Serializable {
         this.heuristic = updateHeuristic(horizontalCount,verticalCount);
     }
 
+    public void increaseDepth(){
+        this.depth++;
+    }
+
 }

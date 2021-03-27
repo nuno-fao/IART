@@ -6,6 +6,7 @@ import board.State;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.*;
 import java.awt.geom.Rectangle2D;
 import java.util.List;
 
@@ -27,11 +28,11 @@ public class View {
         mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         mainFrame.add(new Rects(mainFrame, stateManager,currentState,width + 10,height + 10,Color.white));
         mainFrame.setVisible(true);
+
     }
 }
 
-class Rects extends JPanel
-{
+class Rects extends JPanel {
     State currentState;
     StateManager stateManager;
     Frame mainFrame;
@@ -47,7 +48,12 @@ class Rects extends JPanel
         this.h = h;
         this.color = color;
         setBackground(Color.darkGray);
+        this.setFocusable(true);
+        this.requestFocus();
+        this.addMouseListener(new MouseClick());
     }
+
+
 
     @Override
     public void paintComponent(Graphics g)
@@ -98,11 +104,11 @@ class Rects extends JPanel
     }
 
     private void paintBorders(Graphics g,int w,int h, Color border){
-        drawRectangle(g,border,0,0,currentState.getMatrix().get(0).size()*(w+5) + 10,h * 0.08);
-        drawRectangle(g,border,0,currentState.getMatrix().size() * (h+5) + 5,currentState.getMatrix().get(0).size()*(w+5) + 10,h * 0.08);
+        drawRectangle(g,border,0,0,currentState.getMatrix().get(0).size()*(w+6),h * 0.08);
+        drawRectangle(g,border,0,currentState.getMatrix().size() * (h+6),currentState.getMatrix().get(0).size()*(w+6) ,h * 0.08);
 
-        drawRectangle(g,border,0,0,w * 0.08, currentState.getMatrix().size()*(h+5) + 10);
-        drawRectangle(g,border,currentState.getMatrix().get(0).size() * (w+5) + 5,0,w * 0.08, currentState.getMatrix().size()*(h+5) + 10);
+        drawRectangle(g,border,0,0,w * 0.08, currentState.getMatrix().size()*(h+6));
+        drawRectangle(g,border,currentState.getMatrix().get(0).size() * (w+6),0,w * 0.08, currentState.getMatrix().size()*(h+6)+5);
     }
 
     private  void paintRightSquares(Graphics g,int w,int h,Color border){
@@ -112,9 +118,6 @@ class Rects extends JPanel
                 int l_y = (int) (h*y*1.1);
                 if(currentState.getMatrix().get(y).get(x).getAquariumIdentifier() != currentState.getMatrix().get(y).get(x+1).getAquariumIdentifier()) {
                     drawRectangle(g, border, l_x, l_y, w * 0.08, h + 10);
-                }
-                else {
-                    //drawRectangle(g, background, l_x, l_y + 5, w * 0.08, h);
                 }
             }
         }
@@ -127,8 +130,6 @@ class Rects extends JPanel
                 int l_y = (int) (h + h * y * 1.1 + 5 + h * 0.02);
                 if (currentState.getMatrix().get(y).get(x).getAquariumIdentifier() != currentState.getMatrix().get(y + 1).get(x).getAquariumIdentifier()) {
                     drawRectangle(g, border, l_x , l_y, w + 10, h * 0.08);
-                } else {
-                   // drawRectangle(g, background, l_x + 5, l_y, w , h * 0.08);
                 }
             }
         }
@@ -149,4 +150,20 @@ class Rects extends JPanel
         g2.setColor(color);
         g2.fill(rect);
     }
+
+
+    private class MouseClick extends MouseAdapter {
+
+        @Override
+        public void mouseClicked(MouseEvent e) {
+            int x=e.getX();
+            int y=e.getY();
+
+            stateManager.actOnClick(x,y);
+            repaint();
+        }
+    }
+
+
 }
+

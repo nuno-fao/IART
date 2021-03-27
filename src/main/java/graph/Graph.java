@@ -70,7 +70,7 @@ public class Graph {
         while(true){
             State aux = statePriorityQueue.poll();
             if(aux!=null){
-                String auxState = aux.toString();
+                String auxState = aux.getState();
                 if(!pastStates.containsKey(auxState)){
                     if(aux.isFinished(horizontalCount,verticalCount)){
                         return aux;
