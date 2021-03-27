@@ -54,4 +54,11 @@ public class Aquarium implements Serializable {
         }
         return aux;
     }
+    public int getSquares(){
+        int aux = 0;
+        for(Level level : levels){
+                aux+=level.getNSquares();
+        }
+        return aux;
+    }
 }

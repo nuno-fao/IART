@@ -1,5 +1,6 @@
 package board;
 
+import javax.swing.undo.AbstractUndoableEdit;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -12,6 +13,9 @@ public class State implements Serializable {
     private List<Aquarium> aquariums;
     private int depth;
     private int heuristic;
+    private String s;
+    private String uk = null;
+    private Integer squaresLeft = null;
 
     public int getDepth() {
         return depth;
@@ -100,13 +104,43 @@ public class State implements Serializable {
         return out.toString();
     }
 
+    public String getUK(){
+        if(uk ==null) {
+            StringBuilder out = new StringBuilder();
+            for (List<Square> squares : matrix) {
+                for (int j = 0; j < matrix.get(0).size(); j++) {
+                    if (squares.get(j).isPainted()) {
+                        out.append("1");
+                    } else {
+                        out.append("0");
+                    }
+                }
+            }
+            uk = out.toString();
+        }
+        return uk;
+    }
+
+    public boolean[][] getState2(){
+        boolean out[][] = new boolean[StateManager.height][StateManager.width];
+        int y = 0;
+        for (List<Square> squares : matrix) {
+            for (int j = 0; j < StateManager.width; j++) {
+                out[y][j] = squares.get(j).isPainted();
+            }
+            y++;
+        }
+        return out;
+    }
+
     public boolean isFinished(List<Integer> horizontalCount,List<Integer> verticalCount){
-        return getSquaresLeft(horizontalCount,verticalCount)==0;
+        if(squaresLeft == null)
+            squaresLeft = getSquaresLeft(horizontalCount,verticalCount);
+        return squaresLeft==0;
     }
 
     //used for checking heuristic and game end. Returns -1 - not respecting restrictions; 0 - finished; anything else - the number of squares left
-    private int getSquaresLeft(List<Integer> horizontalCount,List<Integer> verticalCount){
-
+    public int getSquaresLeft(List<Integer> horizontalCount,List<Integer> verticalCount){
         int out=0, aux;
         for(int i = 0;i<verticalCount.size();i++){
             aux = checkHorizontalLine(verticalCount.get(i),matrix.get(i));
@@ -118,7 +152,6 @@ public class State implements Serializable {
             }
 
         }
-
         for(int i = 0;i<horizontalCount.size();i++){
             aux = checkVerticalLine(horizontalCount.get(i),matrix,i);
             if(aux==-1){
@@ -168,49 +201,58 @@ public class State implements Serializable {
 
     //returns heuristic for the current state. If -1 - invalid, if 0 - finished, anything else - the actual heuristic
     public int updateHeuristic(List<Integer> horizontalCount, List<Integer> verticalCount){
-        int out=0, nLeft = getSquaresLeft(horizontalCount,verticalCount);
-
+        if(squaresLeft == null)
+            squaresLeft = getSquaresLeft(horizontalCount,verticalCount);
+        int out=0, nLeft = squaresLeft;
+        //return nLeft;
+        this.squaresLeft = nLeft;
         if(nLeft==-1 || nLeft==0){
             return nLeft;
         }
-        PriorityQueue<Integer> aux = new PriorityQueue<>(aquariums.size(), Comparator.reverseOrder());
+        List<Integer> aux = new ArrayList<>();
 
         for(Aquarium aquarium:aquariums){
             aux.add(aquarium.getNotPainted());
         }
+        aux.sort(Comparator.naturalOrder());
 
         int counter = 0;
+        int s = aux.size()-1;
+        int m = 0;
         while(counter<nLeft){
-            if(aux.peek()!=null) {
-                counter += aux.poll();
+            if(s-m >= 0) {
+                counter += aux.get(s-m);
                 out++;
+                m++;
             }
         }
-
         return out;
     }
 
     //deep copies the state
     public State copy() throws IOException, ClassNotFoundException {
-        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-        ObjectOutputStream out = new ObjectOutputStream(outputStream);
-        out.writeObject(this);
-
-        ByteArrayInputStream inputStream = new ByteArrayInputStream(outputStream.toByteArray());
-        ObjectInputStream in = new ObjectInputStream(inputStream);
-        return (State) in.readObject();
-
+        State out  = StateManager.restartBoard();
+        out.setSol2(getState2());
+        out.depth = depth;
+        return out;
     }
 
     //only used for testing
     public void setSol(String s){
         String []lines = s.split(";");
         for (int y = 0; y < lines.length; y++) {
-            String []pos = lines[y].split(" ");
-            for(int x = 0; x < pos.length; x++){
-                if(pos[x].compareTo("1") == 0){
-                    matrix.get(y).get(x).paint();
+            for(int x = 0; x < lines[y].length(); x+=2){
+                if(lines[y].getBytes()[x] == '1'){
+                    matrix.get(y).get(x/2).paint();
                 }
+            }
+        }
+    }
+    public void setSol2(boolean[][] sol){
+        for (int y = 0; y < StateManager.height; y++) {
+            for(int x = 0; x < StateManager.width; x++){
+                if(sol[y][x])
+                    matrix.get(y).get(x).paint();
             }
         }
     }
@@ -221,4 +263,10 @@ public class State implements Serializable {
         this.heuristic = updateHeuristic(horizontalCount,verticalCount);
     }
 
+    public void updateDepth(List<Integer> horizontalCount, List<Integer> verticalCount) {
+        this.depth++;
+        if(squaresLeft == null)
+            squaresLeft = getSquaresLeft(horizontalCount,verticalCount);
+        this.heuristic = squaresLeft;
+    }
 }

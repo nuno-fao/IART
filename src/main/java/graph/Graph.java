@@ -5,6 +5,14 @@ import board.StateManager;
 
 import java.io.IOException;
 import java.util.*;
+import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Semaphore;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.locks.Condition;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 public class Graph {
     private Map<String, State> pastStates;
@@ -24,31 +32,31 @@ public class Graph {
 
     private List<State> getLeaves(State state)  {
 
-        List<State> out = new ArrayList<>();
+        List<State> out = new CopyOnWriteArrayList<>();
 
         for(int i=0;i<state.getAquariums().size();i++){
-            for(int j=0;j<state.getAquariums().get(i).getLevels().size();j++){
-                if(!state.getAquariums().get(i).getLevels().get(j).isPainted()){
-                    try{
+            for(int j=0;j<state.getAquariums().get(i).getLevels().size();j++) {
+                if (!state.getAquariums().get(i).getLevels().get(j).isPainted()) {
+                    try {
                         State aux = state.copy();
-                        if(!aux.paint(i,j)) System.out.println("Level "+j+" does not exist on aquarium "+i+" or the aquarium itself.");
-                        aux.updateCostAndHeuristic(horizontalCount,verticalCount);
-                        if(aux.getHeuristic()!=-1){
+                        if (!aux.paint(i, j))
+                            System.out.println("Level " + i + " does not exist on aquarium " + j + " or the aquarium itself.");
+
+                        comparator.setCostAndHeuristic(aux,horizontalCount,verticalCount);
+                        if (aux.getHeuristic() != -1) {
                             out.add(aux);
                         }
-                    }
-                    catch (IOException | ClassNotFoundException e){
+                    } catch (IOException | ClassNotFoundException e) {
                         return null;
                     }
                 }
             }
-        }
-
+            }
         return out;
     }
 
     public int getExploredStates(){
-        return pastStates.values().size();
+        return pastStates.size();
     }
 
     public void clear(){
@@ -65,12 +73,12 @@ public class Graph {
     }
 
     public State solve(State initial){
-        pastStates.put(initial.getState(),initial);
+        pastStates.put(initial.getUK(),initial);
         statePriorityQueue.addAll(getLeaves(initial));
         while(true){
             State aux = statePriorityQueue.poll();
             if(aux!=null){
-                String auxState = aux.toString();
+                String auxState = aux.getUK();
                 if(!pastStates.containsKey(auxState)){
                     if(aux.isFinished(horizontalCount,verticalCount)){
                         return aux;
@@ -81,7 +89,6 @@ public class Graph {
                     }
                 }
             }
-
         }
     }
 }

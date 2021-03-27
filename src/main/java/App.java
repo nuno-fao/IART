@@ -1,8 +1,7 @@
 import UI.View;
 import board.StateManager;
 import board.State;
-import graph.DepthFirst;
-import graph.Graph;
+import graph.*;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -11,31 +10,34 @@ import java.util.List;
 public class App {
     StateManager stateManager;
     public static void main(String[] args) {
-        String board =
-                "0 0 0 1 1 1;" +
-                        "2 1 1 1 1 3;" +
-                        "2 2 1 1 1 3;" +
-                        "2 2 4 1 3 3;" +
-                        "5 2 4 1 3 3;" +
-                        "5 4 4 4 4 4;";
-
-        String sol = "1 1 1 0 0 0;" +
-                "1 0 0 0 0 0;" +
-                "1 1 0 0 0 0;" +
-                "1 1 0 1 0 0;" +
-                "0 1 1 1 1 1;" +
-                "0 1 1 1 1 1";
-
-        App a = new App();
-
-        List<Integer> h = new ArrayList<>(Arrays.asList(4, 5, 3, 3, 2, 2));
-        List<Integer> v = new ArrayList<>(Arrays.asList(3, 1, 2, 3, 5, 5));
-        a.stateManager = new StateManager(6,6,h,v);
-        State currentState = a.stateManager.readBoard(board);
-        Graph graph = new Graph(a.stateManager,new DepthFirst(),h,v);
-        //a.board.setSol(sol);
+        Graph graph ;
+        State solution ;
+        StateManager stateManager;
+        String bs;
+        List<Integer> h ;
+        List<Integer> v ;
 
 
-        View view = new View(400,400,a.stateManager,currentState);
+
+        bs =
+                "0 1 1 2 3 3;"+
+                        "0 4 4 5 6 7;"+
+                        "8 9 10 5 6 7;"+
+                        "8 11 10 6 6 6;"+
+                        "12 13 13 14 15 16;"+
+                        "12 17 17 14 15 16;";
+
+        h = new ArrayList<>(Arrays.asList(2, 5, 5, 5, 2, 3));
+        v = new ArrayList<>(Arrays.asList(4, 4, 2, 5, 2, 5));
+        stateManager = new StateManager(6,6, h , v);
+
+        long startTime = System.currentTimeMillis();
+        State initial = stateManager.readBoard(bs);
+        graph = new Graph(stateManager,new Greedy(),h,v);
+        solution = graph.solve(initial);
+        System.out.println("AStar explored "+graph.getExploredStates()+" states and solution has depth of "+solution.getDepth()+": "+(System.currentTimeMillis()-startTime));
+        for (String s:solution.getState().split(";")){
+            System.out.println(s);
+        }
     }
 }
