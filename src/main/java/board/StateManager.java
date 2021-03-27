@@ -66,30 +66,4 @@ public class StateManager {
         return new State(matrix,aquariums,0);
     }
 
-    //from a given state return a list of every valid state that would result of a move
-    public List<State> getLeaves(State state)  {
-
-        List<State> out = new ArrayList<>();
-
-        for(int i=0;i<state.getAquariums().size();i++){
-            for(int j=0;j<state.getAquariums().get(i).getLevels().size();j++){
-                if(!state.getAquariums().get(i).getLevels().get(j).isPainted()){
-                    try{
-                        State aux = state.copy();
-                        if(!aux.paint(i,j)) System.out.println("Level "+j+" does not exist on aquarium "+i+" or the aquarium itself.");
-                        aux.updateCostAndHeuristic(horizontalCount,verticalCount);
-                        if(aux.getHeuristic()!=-1){
-                            out.add(aux);
-                        }
-                    }
-                    catch (IOException | ClassNotFoundException e){
-                        return null;
-                    }
-                }
-            }
-        }
-
-        return out;
-    }
-
 }

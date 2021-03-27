@@ -3,73 +3,81 @@ package graph;
 import board.State;
 import board.StateManager;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.io.IOException;
+import java.util.*;
 
 public class Graph {
-    private Map<Vertex, List<Vertex>> adjVertices;
-    private Vertex root; // graph root
+    private Map<String, State> pastStates;
+    private PriorityQueue<State> statePriorityQueue;
     private StateManager stateManager;
+    private Order comparator;
+    private List<Integer> horizontalCount,verticalCount;
 
-    public Graph(StateManager stateManager,State initialState) {
-        this.root = new Vertex(initialState);
+    public Graph(StateManager stateManager,Order comparator, List<Integer> horizontalCount, List<Integer> verticalCount) {
         this.stateManager = stateManager;
-        this.adjVertices = new HashMap<>();
-        this.adjVertices.put(this.root,new ArrayList<>());
+        this.comparator=comparator;
+        this.pastStates=new HashMap<>();
+        this.statePriorityQueue=new PriorityQueue<>(comparator);
+        this.horizontalCount=horizontalCount;
+        this.verticalCount=verticalCount;
     }
 
-    public Vertex getRoot() {
-        return this.root;
-    }
+    private List<State> getLeaves(State state)  {
 
-    /**
-     * from a given vertex generates its childs and adds them to the graph
-     * @param currentVertex vertex being analyzed
-     */
-    public void generateChilds(Vertex currentVertex){
-        List<State> childs = new StateManager().getLeaves(currentVertex.getState());
-        for (State child : childs) {
-            addVertex(currentVertex,child);
+        List<State> out = new ArrayList<>();
+
+        for(int i=0;i<state.getAquariums().size();i++){
+            for(int j=0;j<state.getAquariums().get(i).getLevels().size();j++){
+                if(!state.getAquariums().get(i).getLevels().get(j).isPainted()){
+                    try{
+                        State aux = state.copy();
+                        if(!aux.paint(i,j)) System.out.println("Level "+j+" does not exist on aquarium "+i+" or the aquarium itself.");
+                        aux.updateCostAndHeuristic(horizontalCount,verticalCount);
+                        if(aux.getHeuristic()!=-1){
+                            out.add(aux);
+                        }
+                    }
+                    catch (IOException | ClassNotFoundException e){
+                        return null;
+                    }
+                }
+            }
         }
+
+        return out;
     }
 
-    private void addVertex(Vertex currentVertex,State childState){
-        if (!adjVertices.containsKey(childState)){
-            adjVertices.put(new Vertex(childState),new ArrayList<>());
+    public void clear(){
+        pastStates=new HashMap<>();
+        statePriorityQueue=new PriorityQueue<>(comparator);
+    }
+
+    public Order getComparator() {
+        return comparator;
+    }
+
+    public void setComparator(Order comparator) {
+        this.comparator = comparator;
+    }
+
+    public State solve(State initial){
+        pastStates.put(initial.getState(),initial);
+        statePriorityQueue.addAll(getLeaves(initial));
+        while(true){
+            State aux = statePriorityQueue.poll();
+            if(aux!=null){
+                String auxState = aux.toString();
+                if(!pastStates.containsKey(auxState)){
+                    if(aux.isFinished(horizontalCount,verticalCount)){
+                        return aux;
+                    }
+                    else {
+                        pastStates.put(auxState, aux);
+                        statePriorityQueue.addAll(getLeaves(aux));
+                    }
+                }
+            }
+
         }
-        addEdge(currentVertex,childState);
-    }
-
-    private void addEdge(Vertex vertex1,State childState){
-        Vertex vertex2 = new Vertex(childState);
-        adjVertices.get(vertex1).add(vertex2);
-    }
-
-    /**
-     * cleans all the graph and adds the root node
-     */
-    public void resetGraph(){
-        this.adjVertices.clear();
-        this.adjVertices.put(this.root,new ArrayList<>());
-    }
-
-    /**
-     * from a given vertex verifies whether it has reached the solution
-     * @param currentVertex vertex being analyzed
-     * @return true if reached the solution, false otherwise
-     */
-    public boolean reachedToTheSolution(Vertex currentVertex){
-        return currentVertex.getState().isFinished(this.stateManager.getHorizontalCount(),this.stateManager.getVerticalCount());
-    }
-
-    /**
-     * from a given vertex it returns all of its children
-     * @param currentVertex vertex being analyzed
-     * @return list with all currentVertex childs
-     */
-    public List<Vertex> getAdjVertices(Vertex currentVertex) {
-        return adjVertices.get(currentVertex);
     }
 }

@@ -1,5 +1,6 @@
 import board.StateManager;
 import board.State;
+import graph.*;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
@@ -205,7 +206,7 @@ class AppTest {
         State initial = stateManager.readBoard(bs);
         State copy = initial.copy();
 
-        assertNotEquals(copy, initial);
+
         copy.paint(1,3);
         assertTrue(copy.getAquariums().get(1).getLevels().get(3).isPainted());
         assertTrue(copy.getMatrix().get(2).get(3).isPainted());
@@ -213,7 +214,136 @@ class AppTest {
         assertFalse(initial.getAquariums().get(1).getLevels().get(2).isPainted());
         assertFalse(initial.getMatrix().get(2).get(3).isPainted());
 
+    }
 
+    @Test
+    void TestBreathFirst(){
+        String bs =
+                "0 0 0 1 1 1;" +
+                        "2 1 1 1 1 3;" +
+                        "2 2 1 1 1 3;" +
+                        "2 2 4 1 3 3;" +
+                        "5 2 4 1 3 3;" +
+                        "5 4 4 4 4 4;";
+
+        List<Integer> h = new ArrayList<>(Arrays.asList(4, 5, 3, 3, 2, 2));
+        List<Integer> v = new ArrayList<>(Arrays.asList(3, 1, 2, 3, 5, 5));
+        StateManager stateManager = new StateManager(6,6, h , v);
+        State initial = stateManager.readBoard(bs);
+
+        Graph graph = new Graph(stateManager,new BreathFirst(),h,v);
+        State solution = graph.solve(initial);
+
+        assertEquals(solution.getState(),"1 1 1 0 0 0;" +
+                "1 0 0 0 0 0;" +
+                "1 1 0 0 0 0;" +
+                "1 1 0 1 0 0;" +
+                "0 1 1 1 1 1;" +
+                "0 1 1 1 1 1;");
+    }
+
+    @Test
+    void TestDepthFirst(){
+        String bs =
+                "0 0 0 1 1 1;" +
+                        "2 1 1 1 1 3;" +
+                        "2 2 1 1 1 3;" +
+                        "2 2 4 1 3 3;" +
+                        "5 2 4 1 3 3;" +
+                        "5 4 4 4 4 4;";
+
+        List<Integer> h = new ArrayList<>(Arrays.asList(4, 5, 3, 3, 2, 2));
+        List<Integer> v = new ArrayList<>(Arrays.asList(3, 1, 2, 3, 5, 5));
+        StateManager stateManager = new StateManager(6,6, h , v);
+        State initial = stateManager.readBoard(bs);
+
+        Graph graph = new Graph(stateManager,new DepthFirst(),h,v);
+        State solution = graph.solve(initial);
+
+        assertEquals(solution.getState(),"1 1 1 0 0 0;" +
+                "1 0 0 0 0 0;" +
+                "1 1 0 0 0 0;" +
+                "1 1 0 1 0 0;" +
+                "0 1 1 1 1 1;" +
+                "0 1 1 1 1 1;");
+    }
+
+    @Test
+    void TestGreedy(){
+        String bs =
+                "0 0 0 1 1 1;" +
+                        "2 1 1 1 1 3;" +
+                        "2 2 1 1 1 3;" +
+                        "2 2 4 1 3 3;" +
+                        "5 2 4 1 3 3;" +
+                        "5 4 4 4 4 4;";
+
+        List<Integer> h = new ArrayList<>(Arrays.asList(4, 5, 3, 3, 2, 2));
+        List<Integer> v = new ArrayList<>(Arrays.asList(3, 1, 2, 3, 5, 5));
+        StateManager stateManager = new StateManager(6,6, h , v);
+        State initial = stateManager.readBoard(bs);
+
+        Graph graph = new Graph(stateManager,new Greedy(),h,v);
+        State solution = graph.solve(initial);
+
+        assertEquals(solution.getState(),"1 1 1 0 0 0;" +
+                "1 0 0 0 0 0;" +
+                "1 1 0 0 0 0;" +
+                "1 1 0 1 0 0;" +
+                "0 1 1 1 1 1;" +
+                "0 1 1 1 1 1;");
+    }
+
+    @Test
+    void TestDjikstra(){
+        String bs =
+                "0 0 0 1 1 1;" +
+                        "2 1 1 1 1 3;" +
+                        "2 2 1 1 1 3;" +
+                        "2 2 4 1 3 3;" +
+                        "5 2 4 1 3 3;" +
+                        "5 4 4 4 4 4;";
+
+        List<Integer> h = new ArrayList<>(Arrays.asList(4, 5, 3, 3, 2, 2));
+        List<Integer> v = new ArrayList<>(Arrays.asList(3, 1, 2, 3, 5, 5));
+        StateManager stateManager = new StateManager(6,6, h , v);
+        State initial = stateManager.readBoard(bs);
+
+        Graph graph = new Graph(stateManager,new Djikstra(),h,v);
+        State solution = graph.solve(initial);
+
+        assertEquals(solution.getState(),"1 1 1 0 0 0;" +
+                "1 0 0 0 0 0;" +
+                "1 1 0 0 0 0;" +
+                "1 1 0 1 0 0;" +
+                "0 1 1 1 1 1;" +
+                "0 1 1 1 1 1;");
+    }
+
+    @Test
+    void TestAStar(){
+        String bs =
+                "0 0 0 1 1 1;" +
+                        "2 1 1 1 1 3;" +
+                        "2 2 1 1 1 3;" +
+                        "2 2 4 1 3 3;" +
+                        "5 2 4 1 3 3;" +
+                        "5 4 4 4 4 4;";
+
+        List<Integer> h = new ArrayList<>(Arrays.asList(4, 5, 3, 3, 2, 2));
+        List<Integer> v = new ArrayList<>(Arrays.asList(3, 1, 2, 3, 5, 5));
+        StateManager stateManager = new StateManager(6,6, h , v);
+        State initial = stateManager.readBoard(bs);
+
+        Graph graph = new Graph(stateManager,new AStar(),h,v);
+        State solution = graph.solve(initial);
+
+        assertEquals(solution.getState(),"1 1 1 0 0 0;" +
+                "1 0 0 0 0 0;" +
+                "1 1 0 0 0 0;" +
+                "1 1 0 1 0 0;" +
+                "0 1 1 1 1 1;" +
+                "0 1 1 1 1 1;");
     }
 
 }
