@@ -58,18 +58,23 @@ class Rects extends JPanel {
 
         JButton easy = new JButton("EASY");
         easy.setBounds(w+15,40,150,50);
-        easy.addActionListener(new LevelChanger("1"));
+        easy.addActionListener(new LevelChanger(0));
         add(easy);
 
         JButton medium = new JButton("MEDIUM");
         medium.setBounds(w+15,120,150,50);
-        medium.addActionListener(new LevelChanger("2"));
+        medium.addActionListener(new LevelChanger(1));
         add(medium);
 
         JButton hard = new JButton("HARD");
         hard.setBounds(w+15,200,150,50);
-        hard.addActionListener(new LevelChanger("3"));
+        hard.addActionListener(new LevelChanger(2));
         add(hard);
+
+        JButton custom = new JButton("CUSTOM");
+        custom.setBounds(w+15,200,150,50);
+        custom.addActionListener(new LevelChanger(3));
+        add(custom);
 
         JButton hint = new JButton("HINT");
         hint.setBounds(w+15,280,150,50);
@@ -189,9 +194,12 @@ class Rects extends JPanel {
             int x=e.getX();
             int y=e.getY();
 
-            stateManager.actOnClick(x,y);
-            revalidate();
-            repaint();
+            if(x<=w && y<=h){
+                stateManager.actOnClick(x,y);
+                revalidate();
+                repaint();
+            }
+
         }
     }
 
@@ -203,9 +211,9 @@ class Rects extends JPanel {
     }
 
     private class LevelChanger implements ActionListener {
-        String level;
+        int level;
 
-        public LevelChanger(String level) {
+        public LevelChanger(int level) {
             this.level=level;
         }
 

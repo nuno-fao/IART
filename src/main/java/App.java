@@ -10,7 +10,26 @@ import java.util.Arrays;
 import java.util.List;
 
 public class App {
-    StateManager stateManager;
+    private StateManager stateManager;
+    private View view;
+    static List<PredefinedProblem> problems;
+
+    App() {
+        problems.add(new PredefinedProblem(new ArrayList<>(Arrays.asList(4, 5, 3, 3, 2, 2)), new ArrayList<>(Arrays.asList(3, 1, 2, 3, 5, 5)), "0 0 0 1 1 1;" +
+                "2 1 1 1 1 3;" +
+                "2 2 1 1 1 3;" +
+                "2 2 4 1 3 3;" +
+                "5 2 4 1 3 3;" +
+                "5 4 4 4 4 4;"));
+
+        problems.add(new PredefinedProblem(new ArrayList<>(Arrays.asList(4, 4, 5, 3, 4, 4)), new ArrayList<>(Arrays.asList(1, 4, 5, 5, 5, 4)), "0 0 1 1 1 2;" +
+                "0 0 3 1 2 2" +
+                "4 5 3 1 2 17;" +
+                "6 7 12 14 2 17;" +
+                "8 9 13 14 14 16;" +
+                "10 11 13 15 16;"));
+    }
+
     public static void main(String[] args) {
         String board =
                 "0 0 0 1 1 1;" +
@@ -57,7 +76,20 @@ public class App {
 
         //Graph graph = new Graph(a.stateManager,new Djikstra(),h,v);
 
-        View view = new View(67*h.size(),67*v.size(),a.stateManager,currentState);
+        a.view = new View(67*h.size(),67*v.size(),a.stateManager,currentState);
 
+    }
+}
+
+
+class PredefinedProblem {
+    List<Integer> h;
+    List<Integer> v;
+    String boardString;
+
+    public PredefinedProblem(List<Integer> h, List<Integer> v, String boardString) {
+        this.h = h;
+        this.v = v;
+        this.boardString = boardString;
     }
 }
