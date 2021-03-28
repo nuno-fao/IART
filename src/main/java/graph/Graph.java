@@ -37,7 +37,6 @@ public class Graph {
         for(int i=0;i<state.getAquariums().size();i++){
             for(int j=0;j<state.getAquariums().get(i).getLevels().size();j++) {
                 if (!state.getAquariums().get(i).getLevels().get(j).isPainted()) {
-                    try {
                         State aux = state.copy();
                         if (!aux.paint(i, j))
                             System.out.println("Level " + i + " does not exist on aquarium " + j + " or the aquarium itself.");
@@ -46,9 +45,6 @@ public class Graph {
                         if (aux.getHeuristic() != -1) {
                             out.add(aux);
                         }
-                    } catch (IOException | ClassNotFoundException e) {
-                        return null;
-                    }
                 }
             }
             }

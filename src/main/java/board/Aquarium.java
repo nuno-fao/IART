@@ -54,6 +54,7 @@ public class Aquarium implements Serializable {
         }
         return aux;
     }
+
     public int getSquares(){
         int aux = 0;
         for(Level level : levels){
@@ -61,4 +62,26 @@ public class Aquarium implements Serializable {
         }
         return aux;
     }
+
+    public void squareIsClicked(Square square){
+        for(int i =0;i<levels.size();i++){
+            Level level = levels.get(i);
+            if(level.getSquares().get(0).getPos().getY() == square.getPos().getY()){
+                if(level.isPainted()){
+                    unpaintDownTo(i);
+                }
+                else if(!level.isPainted()){
+                    level.paint();
+                }
+            }
+        }
+
+    }
+
+    public void unpaintDownTo(int level){
+        for(int i =level;i<levels.size();i++){
+            levels.get(i).unpaint();
+        }
+    }
+
 }

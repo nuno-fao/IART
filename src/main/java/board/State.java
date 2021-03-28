@@ -230,11 +230,15 @@ public class State implements Serializable {
     }
 
     //deep copies the state
-    public State copy() throws IOException, ClassNotFoundException {
+    public State copy(){
         State out  = StateManager.restartBoard();
-        out.setSol2(getState2());
+        out.setSol2(getState2(),aquariums);
         out.depth = depth;
         return out;
+    }
+    public void copy(State s) {
+        setSol2(getState2(),s.getAquariums());
+        depth = s.depth;
     }
 
     //only used for testing
@@ -248,11 +252,24 @@ public class State implements Serializable {
             }
         }
     }
-    public void setSol2(boolean[][] sol){
+    public void setSol2(boolean[][] sol,List<Aquarium> aquariums){
         for (int y = 0; y < StateManager.height; y++) {
             for(int x = 0; x < StateManager.width; x++){
                 if(sol[y][x])
                     matrix.get(y).get(x).paint();
+                else
+                    matrix.get(y).get(x).unpaint();
+            }
+        }
+        for (int a=0;a< aquariums.size();a++){
+            List<Level> local_level = this.aquariums.get(a).getLevels();
+            List<Level> copied_level = aquariums.get(a).getLevels();
+            for(int l = 0;l<local_level.size();l++){
+                if(copied_level.get(l).isPainted())
+                    local_level.get(l).paint();
+                else{
+                    local_level.get(l).unpaint();
+                }
             }
         }
     }
@@ -269,4 +286,8 @@ public class State implements Serializable {
             squaresLeft = getSquaresLeft(horizontalCount,verticalCount);
         this.heuristic = squaresLeft;
     }
+    public void increaseDepth(){
+        this.depth++;
+    }
+
 }

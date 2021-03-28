@@ -18,6 +18,8 @@ public class Square implements Serializable {
         painted = true;
     }
 
+    public void unpaint() {painted = false;}
+
     public boolean isPainted() {
         return painted;
     }

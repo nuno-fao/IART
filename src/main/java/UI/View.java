@@ -6,12 +6,21 @@ import board.State;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.*;
 import java.awt.geom.Rectangle2D;
 import java.util.List;
 
+import static java.lang.Thread.sleep;
+
 public class View {
+    Rects a;
 
     private JFrame mainFrame;
+
+    public void reload(){
+            mainFrame.revalidate();
+            mainFrame.repaint();
+    }
 
     public View(int width, int height, StateManager stateManager, State currentState){
         //layout.setHgap(10);
@@ -19,24 +28,25 @@ public class View {
 
 
         mainFrame = new JFrame("Aquarium");
-        mainFrame.setSize(width+10,height+10);
+        mainFrame.setSize(width+200,height+5);
         Dimension d = new Dimension();
-        d.setSize(width + 10,height + 10);
+        d.setSize(width + 200,height + 5);
         mainFrame.getContentPane().setPreferredSize(d);
         mainFrame.pack();
         mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        mainFrame.add(new Rects(mainFrame, stateManager,currentState,width + 10,height + 10,Color.white));
+        a = new Rects(mainFrame, stateManager,currentState,width + 10,height + 10,Color.white);
+        mainFrame.add(a);
         mainFrame.setVisible(true);
     }
 }
 
-class Rects extends JPanel
-{
+class Rects extends JPanel {
     State currentState;
     StateManager stateManager;
     Frame mainFrame;
     int w,h;
     Color color;
+
 
     public Rects(JFrame frame, StateManager stateManager, State currentState, int w, int h, Color color) {
         super();
@@ -46,8 +56,47 @@ class Rects extends JPanel
         this.w = w;
         this.h = h;
         this.color = color;
+
         setBackground(Color.darkGray);
+        this.setFocusable(true);
+        this.requestFocus();
+        this.addMouseListener(new MouseClick());
+
+        setLayout(null);
+
+        JButton easy = new JButton("EASY");
+        easy.setBounds(w+15,40,150,50);
+        easy.addActionListener(new LevelChanger(0));
+        add(easy);
+
+        JButton medium = new JButton("MEDIUM");
+        medium.setBounds(w+15,120,150,50);
+        medium.addActionListener(new LevelChanger(1));
+        add(medium);
+
+        JButton hard = new JButton("HARD");
+        hard.setBounds(w+15,200,150,50);
+        hard.addActionListener(new LevelChanger(2));
+        add(hard);
+
+        JButton custom = new JButton("CUSTOM");
+        custom.setBounds(w+15,200,150,50);
+        custom.addActionListener(new LevelChanger(3));
+        add(custom);
+
+        JButton hint = new JButton("HINT");
+        hint.setBounds(w+15,280,150,50);
+        hint.addActionListener(new Helper());
+        add(hint);
+
+        JButton reset = new JButton("RESET");
+        reset.setBounds(w+15,360,150,50);
+        reset.addActionListener(new Resetter());
+        add(reset);
+
     }
+
+
 
     @Override
     public void paintComponent(Graphics g)
@@ -98,11 +147,11 @@ class Rects extends JPanel
     }
 
     private void paintBorders(Graphics g,int w,int h, Color border){
-        drawRectangle(g,border,0,0,currentState.getMatrix().get(0).size()*(w+5) + 10,h * 0.08);
-        drawRectangle(g,border,0,currentState.getMatrix().size() * (h+5) + 5,currentState.getMatrix().get(0).size()*(w+5) + 10,h * 0.08);
+        drawRectangle(g,border,0,0,currentState.getMatrix().get(0).size()*(w+6),h * 0.08);
+        drawRectangle(g,border,0,currentState.getMatrix().size() * (h+6),currentState.getMatrix().get(0).size()*(w+6) ,h * 0.08);
 
-        drawRectangle(g,border,0,0,w * 0.08, currentState.getMatrix().size()*(h+5) + 10);
-        drawRectangle(g,border,currentState.getMatrix().get(0).size() * (w+5) + 5,0,w * 0.08, currentState.getMatrix().size()*(h+5) + 10);
+        drawRectangle(g,border,0,0,w * 0.08, currentState.getMatrix().size()*(h+6));
+        drawRectangle(g,border,currentState.getMatrix().get(0).size() * (w+6),0,w * 0.08, currentState.getMatrix().size()*(h+6)+5);
     }
 
     private  void paintRightSquares(Graphics g,int w,int h,Color border){
@@ -112,9 +161,6 @@ class Rects extends JPanel
                 int l_y = (int) (h*y*1.1);
                 if(currentState.getMatrix().get(y).get(x).getAquariumIdentifier() != currentState.getMatrix().get(y).get(x+1).getAquariumIdentifier()) {
                     drawRectangle(g, border, l_x, l_y, w * 0.08, h + 10);
-                }
-                else {
-                    //drawRectangle(g, background, l_x, l_y + 5, w * 0.08, h);
                 }
             }
         }
@@ -127,8 +173,6 @@ class Rects extends JPanel
                 int l_y = (int) (h + h * y * 1.1 + 5 + h * 0.02);
                 if (currentState.getMatrix().get(y).get(x).getAquariumIdentifier() != currentState.getMatrix().get(y + 1).get(x).getAquariumIdentifier()) {
                     drawRectangle(g, border, l_x , l_y, w + 10, h * 0.08);
-                } else {
-                   // drawRectangle(g, background, l_x + 5, l_y, w , h * 0.08);
                 }
             }
         }
@@ -149,4 +193,53 @@ class Rects extends JPanel
         g2.setColor(color);
         g2.fill(rect);
     }
+
+
+    private class MouseClick extends MouseAdapter {
+
+        @Override
+        public void mouseClicked(MouseEvent e) {
+            int x=e.getX();
+            int y=e.getY();
+
+            if(x<=w && y<=h){
+                stateManager.actOnClick(x,y);
+                revalidate();
+                repaint();
+            }
+
+        }
+    }
+
+    private class Resetter implements ActionListener {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            stateManager.reset();
+            revalidate();
+            repaint();
+        }
+    }
+
+    private class LevelChanger implements ActionListener {
+        int level;
+
+        public LevelChanger(int level) {
+            this.level=level;
+        }
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            System.out.println(e.toString());
+        }
+    }
+
+    private class Helper implements ActionListener {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            System.out.println(e.toString());
+        }
+    }
+
+
 }
+

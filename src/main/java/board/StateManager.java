@@ -9,6 +9,15 @@ public class StateManager {
     public static String s;
     public static int board[][];
 
+    private State currentState;
+
+    public State getCurrentState() {
+        return currentState;
+    }
+
+    public void setCurrentState(State currentState) {
+        this.currentState = currentState;
+    }
 
     public StateManager(int width, int height, List<Integer> horizontalCount, List<Integer> verticalCount) {
         StateManager.width = width;
@@ -65,7 +74,17 @@ public class StateManager {
         for(Aquarium aquarium:aquariums)
             aquarium.process();
 
-        return new State(matrix,aquariums,0);
+        this.currentState = new State(matrix,aquariums,0);
+
+        return currentState;
+    }
+
+    public void actOnClick(int clickX, int clickY){
+        int i = (int) clickX/67;
+        int j = (int) clickY/67;
+        Square aux = currentState.getMatrix().get(j).get(i);
+        currentState.getAquariums().get(aux.getAquariumIdentifier()).squareIsClicked(aux);
+        currentState.increaseDepth();
     }
 
     public static State restartBoard(){
@@ -99,5 +118,9 @@ public class StateManager {
             aquarium.process();
 
         return new State(matrix,aquariums,0);
+    }
+    public void reset(){
+        State reset = restartBoard();
+        this.currentState.setSol2(reset.getState2(),reset.getAquariums());
     }
 }
