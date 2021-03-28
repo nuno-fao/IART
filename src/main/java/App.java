@@ -1,10 +1,7 @@
 import UI.View;
 import board.State;
 import board.StateManager;
-import graph.AStar;
-import graph.BreathFirst;
-import graph.Graph;
-import graph.Greedy;
+import graph.*;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -37,17 +34,22 @@ public class App {
         List<Integer> h;
         List<Integer> v;
 
-        bs =
-                "0 1 1 2 2 2;" +
-                        "0 3 4 5 6 6;" +
-                        "7 8 4 5 9 9;" +
-                        "10 8 4 5 11 11;" +
-                        "12 12 4 13 13 14;" +
-                        "15 15 16 16 13 17;";
 
-        h = new ArrayList<>(Arrays.asList(5, 5, 2, 4, 5, 3));
-        v = new ArrayList<>(Arrays.asList(4, 2, 3, 5, 5, 5));
-        a.stateManager = new StateManager(6, 6, h, v);
+        bs =
+                "0 0 1 2 2 2 2 2 2 2;"+
+                        "0 1 1 2 2 2 2 3 3 4;"+
+                        "0 1 1 5 5 6 7 7 3 4;"+
+                        "0 0 5 5 5 6 7 8 8 4;"+
+                        "9 0 9 9 5 7 7 7 4 4;"+
+                        "9 9 9 10 5 11 7 11 4 4;"+
+                        "10 10 9 10 5 11 7 11 4 4;"+
+                        "10 10 10 10 11 11 11 11 4 12;"+
+                        "10 13 13 11 11 12 12 11 4 12;"+
+                        "10 13 11 11 11 12 12 12 12 12;";
+
+        h = new ArrayList<>(Arrays.asList(6,6,7,4,4,4,4,4,7,2));
+        v = new ArrayList<>(Arrays.asList(8,8,4,5,1,3,3,5,2,9));
+        a.stateManager = new StateManager(10,10, h , v);
 
         long startTime = System.currentTimeMillis();
 

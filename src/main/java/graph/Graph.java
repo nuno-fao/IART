@@ -57,9 +57,9 @@ public class Graph {
                     } else {
                         pastStates.add(auxState);
                         statePriorityQueue.addAll(getLeaves(aux));
-                        System.out.println(getExploredStates());
+                        /*System.out.println(getExploredStates());
                         System.out.println(statePriorityQueue.size());
-                        System.out.println();
+                        System.out.println();*/
                     }
                 }
             }
