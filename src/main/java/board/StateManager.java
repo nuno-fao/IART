@@ -1,8 +1,6 @@
 package board;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
 public class StateManager {
     public static int width, height;
@@ -65,6 +63,8 @@ public class StateManager {
 
     //creates initial state from a board string
     public State readBoard(String s) {
+
+        board = new int[width][height];
         //todo
         HashMap<Integer, Aquarium> aqMap = new HashMap<>();
         List<Aquarium> aquariums = new ArrayList<>();
@@ -116,4 +116,13 @@ public class StateManager {
         State reset = restartBoard();
         this.currentState.setSol2(reset.getState2(), reset.getAquariums());
     }
+
+    public void changeLevel(String board,List<Integer> hc,List<Integer> vc){
+        width=hc.size();
+        height=vc.size();
+        horizontalCount=hc;
+        verticalCount=vc;
+        readBoard(board);
+    }
+
 }

@@ -1,5 +1,6 @@
 package UI;
 
+import board.PredefinedProblem;
 import board.Square;
 import board.State;
 import board.StateManager;
@@ -18,11 +19,9 @@ public class View {
 
     private final JFrame mainFrame;
 
-    public View(int width, int height, StateManager stateManager, State currentState) {
+    public View(int width, int height, StateManager stateManager, State currentState, List<PredefinedProblem> problems) {
         //layout.setHgap(10);
         //layout.setVgap(10);
-
-
         mainFrame = new JFrame("Aquarium");
         mainFrame.setSize(width + 200, height + 5);
         Dimension d = new Dimension();
@@ -30,7 +29,7 @@ public class View {
         mainFrame.getContentPane().setPreferredSize(d);
         mainFrame.pack();
         mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        a = new Rects(stateManager, currentState, width + 10, height + 10, Color.white);
+        a = new Rects(stateManager, currentState, width + 10, height + 10, Color.white,problems);
         mainFrame.add(a);
         mainFrame.setVisible(true);
     }
@@ -42,58 +41,63 @@ public class View {
 }
 
 class Rects extends JPanel {
-    final State currentState;
-    final StateManager stateManager;
-    final int w;
-    final int h;
-    final Color color;
+    State currentState;
+    StateManager stateManager;
+    int w;
+    int h;
+    Color color;
+    final List<PredefinedProblem> problems;
 
 
-    public Rects(StateManager stateManager, State currentState, int w, int h, Color color) {
+    public Rects(StateManager stateManager, State currentState, int w, int h, Color color, List<PredefinedProblem> problems) {
         super();
         this.currentState = currentState;
         this.stateManager = stateManager;
         this.w = w;
         this.h = h;
         this.color = color;
+        this.problems=problems;
 
         setBackground(Color.darkGray);
         this.setFocusable(true);
         this.requestFocus();
         this.addMouseListener(new MouseClick());
 
-        setLayout(null);
+        drawButtons();
 
+        setLayout(null);
+    }
+
+    private void drawButtons(){
         JButton easy = new JButton("EASY");
-        easy.setBounds(w + 15, 40, 150, 50);
+        easy.setBounds(w + 15, 30, 150, 50);
         easy.addActionListener(new LevelChanger(0));
         add(easy);
 
         JButton medium = new JButton("MEDIUM");
-        medium.setBounds(w + 15, 120, 150, 50);
+        medium.setBounds(w + 15, 100, 150, 50);
         medium.addActionListener(new LevelChanger(1));
         add(medium);
 
         JButton hard = new JButton("HARD");
-        hard.setBounds(w + 15, 200, 150, 50);
+        hard.setBounds(w + 15, 170, 150, 50);
         hard.addActionListener(new LevelChanger(2));
         add(hard);
 
-        JButton custom = new JButton("CUSTOM");
-        custom.setBounds(w + 15, 200, 150, 50);
-        custom.addActionListener(new LevelChanger(3));
-        add(custom);
+        //JButton custom = new JButton("CUSTOM");
+        //custom.setBounds(w + 15, 200, 150, 50);
+        //custom.addActionListener(new LevelChanger(3));
+        //add(custom);
 
         JButton hint = new JButton("HINT");
-        hint.setBounds(w + 15, 280, 150, 50);
+        hint.setBounds(w + 15, 240, 150, 50);
         hint.addActionListener(new Helper());
         add(hint);
 
         JButton reset = new JButton("RESET");
-        reset.setBounds(w + 15, 360, 150, 50);
+        reset.setBounds(w + 15, 310, 150, 50);
         reset.addActionListener(new Resetter());
         add(reset);
-
     }
 
 
@@ -218,7 +222,7 @@ class Rects extends JPanel {
         }
     }
 
-    private static class LevelChanger implements ActionListener {
+    private class LevelChanger implements ActionListener {
         final int level;
 
         public LevelChanger(int level) {
@@ -227,11 +231,30 @@ class Rects extends JPanel {
 
         @Override
         public void actionPerformed(ActionEvent e) {
-            System.out.println(e.toString());
+            w=problems.get(level).getH().size()*67 + 10;
+            h=problems.get(level).getV().size()*67 + 10;
+
+            removeAll();
+            drawButtons();
+
+            stateManager.changeLevel(problems.get(level).getBoardString(),problems.get(level).getH(),problems.get(level).getV());
+
+            setSize(w + 200, h + 5);
+
+            //next 3 lines should resize window but don't
+            Dimension d = new Dimension();
+            d.setSize(w + 200, h + 5);
+            getRootPane().getContentPane().setPreferredSize(d);
+
+            currentState=stateManager.getCurrentState();
+
+            revalidate();
+            repaint();
+
         }
     }
 
-    private static class Helper implements ActionListener {
+    private class Helper implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {
             System.out.println(e.toString());
