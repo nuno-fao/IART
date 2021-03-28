@@ -41,6 +41,7 @@ public class StateManager {
     public State readBoard(String s){
         //todo
         StateManager.s = s;
+        HashMap<Integer,Aquarium> aqMap = new HashMap<>();
         List<Aquarium> aquariums = new ArrayList<>();
 
         List<List<Square>> matrix = new ArrayList<>();
@@ -57,12 +58,13 @@ public class StateManager {
             for(int x = 0; x < pos.length; x++){
                 Square tempSquare = new Square(new Position(x,y),false, Integer.parseInt(pos[x]));
                 Aquarium tempAquarium;
-                if(aquariums.size() <= tempSquare.aquariumIdentifier){
+                if(!aqMap.containsKey(tempSquare.getAquariumIdentifier())){
                      tempAquarium = new Aquarium();
-                    aquariums.add(tempAquarium);
+                     aqMap.put(tempSquare.getAquariumIdentifier(),tempAquarium);
+                     aquariums.add(tempAquarium);
                 }
                 else {
-                    tempAquarium = aquariums.get(tempSquare.getAquariumIdentifier());
+                    tempAquarium = aqMap.get(tempSquare.getAquariumIdentifier());
                 }
                 tempAquarium.addSquare(tempSquare);
                 matrix.get(y).set(x,tempSquare);
@@ -70,11 +72,21 @@ public class StateManager {
             }
         }
 
-
         for(Aquarium aquarium:aquariums)
             aquarium.process();
 
         this.currentState = new State(matrix,aquariums,0);
+
+
+        int i = 0;
+        for (Aquarium aquarium:aquariums){
+            for(Level level:aquarium.getLevels()){
+                for(Square square :level.getSquares()){
+                    square.setAquariumIdentifier(i);
+                }
+            }
+            i++;
+        }
 
         return currentState;
     }

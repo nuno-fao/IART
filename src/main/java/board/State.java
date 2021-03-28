@@ -201,8 +201,7 @@ public class State implements Serializable {
 
     //returns heuristic for the current state. If -1 - invalid, if 0 - finished, anything else - the actual heuristic
     public int updateHeuristic(List<Integer> horizontalCount, List<Integer> verticalCount){
-        if(squaresLeft == null)
-            squaresLeft = getSquaresLeft(horizontalCount,verticalCount);
+        squaresLeft = getSquaresLeft(horizontalCount,verticalCount);
         int out=0, nLeft = squaresLeft;
         //return nLeft;
         this.squaresLeft = nLeft;
