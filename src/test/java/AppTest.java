@@ -1,17 +1,15 @@
-import UI.View;
 import board.StateManager;
 import board.State;
 import graph.*;
 import org.junit.jupiter.api.*;
 
-import java.io.IOException;
-import java.io.Serial;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+@SuppressWarnings("unused")
 class AppTest {
 
     /*
@@ -202,7 +200,7 @@ class AppTest {
     boolean testSol;
 
 
-    @BeforeEach
+    //@BeforeEach
     void setup1(){
         bs =
                 "0 0 0 1 1 1;" +
@@ -281,8 +279,24 @@ class AppTest {
         testSol = false;
     }
 
+    @BeforeEach
+    void setup5(){
+        bs =
+                "0 1 1 1 1 2;"+
+                        "0 3 3 3 1 2;"+
+                        "4 3 1 1 1 5;"+
+                        "4 5 5 5 5 5;"+
+                        "4 4 4 6 6 5;"+
+                        "7 7 8 8 8 8;";
+
+        h = new ArrayList<>(Arrays.asList(2, 3, 5, 4, 5, 3));
+        v = new ArrayList<>(Arrays.asList(4, 2, 3, 5, 4, 4));
+        stateManager = new StateManager(6,6, h , v);
+        testSol = false;
+    }
+
     //@Test
-    void TestDeepCopy() throws IOException, ClassNotFoundException {
+    void TestDeepCopy() {
         String bs =
                 "0 0 0 1 1 1;" +
                         "2 1 1 1 1 3;" +
@@ -311,7 +325,7 @@ class AppTest {
     void TestBreathFirst(){
         long startTime = System.currentTimeMillis();
         State initial = stateManager.readBoard(bs);
-        graph = new Graph(stateManager,new BreathFirst(),h,v);
+        graph = new Graph(new BreathFirst(),h,v);
         solution = graph.solve(initial);
         if(testSol)
             assertEquals(solution.getState(),sol);
@@ -322,7 +336,7 @@ class AppTest {
     void TestDepthFirst(){
         long startTime = System.currentTimeMillis();
         State initial = stateManager.readBoard(bs);
-        graph = new Graph(stateManager,new DepthFirst(),h,v);
+        graph = new Graph(new DepthFirst(),h,v);
         solution = graph.solve(initial);
         if(testSol)
             assertEquals(solution.getState(),sol);
@@ -333,7 +347,7 @@ class AppTest {
     void TestGreedy(){
         long startTime = System.currentTimeMillis();
         State initial = stateManager.readBoard(bs);
-        graph = new Graph(stateManager,new Greedy(),h,v);
+        graph = new Graph(new Greedy(),h,v);
         solution = graph.solve(initial);
         if(testSol)
             assertEquals(solution.getState(),sol);
@@ -344,7 +358,7 @@ class AppTest {
     void TestDjikstra(){
         long startTime = System.currentTimeMillis();
         State initial = stateManager.readBoard(bs);
-        graph = new Graph(stateManager,new Djikstra(),h,v);
+        graph = new Graph(new Djikstra(),h,v);
         solution = graph.solve(initial);
         if(testSol)
             assertEquals(solution.getState(),sol);
@@ -355,7 +369,7 @@ class AppTest {
     void TestAStar(){
         long startTime = System.currentTimeMillis();
         State initial = stateManager.readBoard(bs);
-        graph = new Graph(stateManager,new AStar(),h,v);
+        graph = new Graph(new AStar(),h,v);
         solution = graph.solve(initial);
         if(testSol)
             assertEquals(solution.getState(),sol);

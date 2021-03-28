@@ -1,11 +1,10 @@
 package graph;
 
 import board.State;
-import board.StateManager;
 
 import java.util.List;
 
-public class BreathFirst implements Order{
+public class BreathFirst implements Order {
     @Override
     public int compare(State o1, State o2) {
         return o1.getDepth() - o2.getDepth();
@@ -14,7 +13,7 @@ public class BreathFirst implements Order{
 
     @Override
     public void setCostAndHeuristic(State s, List<Integer> h, List<Integer> v) {
-        s.updateDepth(h,v);
+        s.updateDepth(h, v);
 
     }
 }

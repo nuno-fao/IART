@@ -3,28 +3,24 @@ package board;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 public class Level implements Serializable {
-    private List<Square> squares = new ArrayList<>();
+    private final List<Square> squares = new ArrayList<>();
     private boolean painted = false;
-    private Level nextLevel;
-
-    public Level getNextLevel() {
-        return nextLevel;
-    }
-
-    public void setNextLevel(Level nextLevel) {
-        this.nextLevel = nextLevel;
-    }
-
-    public Level(List<Square> squares, Level level) {
-        this.squares = squares;
-        this.nextLevel = level;
-    }
+    private final Level nextLevel;
 
     public Level(Level level) {
         this.nextLevel = level;
+    }
+
+    public int size() {
+        int out = 0;
+        for (Square s : squares) {
+            out += 15;
+        }
+        out += 8;
+        out += 1;
+        return out;
     }
 
     public void paint() {
@@ -47,20 +43,12 @@ public class Level implements Serializable {
         return painted;
     }
 
-    public void setPainted(boolean painted) {
-        this.painted = painted;
-    }
-
     public List<Square> getSquares() {
         return squares;
     }
 
     public int getNSquares() {
         return squares.size();
-    }
-
-    public void setSquares(List<Square> squares) {
-        this.squares = squares;
     }
 
     public void addSquare(Square s) {
