@@ -2,7 +2,9 @@ import UI.View;
 import board.State;
 import board.StateManager;
 import graph.AStar;
+import graph.BreathFirst;
 import graph.Graph;
+import graph.Greedy;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -54,7 +56,7 @@ public class App {
         a.view = new View(67 * h.size(), 67 * v.size(), a.stateManager, initial);
 
         Thread solve = new Thread(() -> {
-            Graph graph = new Graph(new AStar(), h, v);
+            Graph graph = new Graph(new Greedy(), h, v);
             State initial2 = graph.solve(a.stateManager.getCurrentState());
             System.out.println("AStar explored " + graph.getExploredStates() + " states and solution has depth of " + initial2.getDepth() + ": " + (System.currentTimeMillis() - startTime));
             for (String s : initial2.getState().split(";")) {

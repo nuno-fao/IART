@@ -20,7 +20,6 @@ public class Graph {
     }
 
     private List<State> getLeaves(State state) {
-
         List<State> out = new ArrayList<>();
 
         for (int i = 0; i < state.getAquariums().size(); i++) {
@@ -54,19 +53,12 @@ public class Graph {
                 String auxState = aux.getUK();
                 if (!pastStates.contains(auxState)) {
                     if (aux.isFinished(horizontalCount, verticalCount)) {
-                        System.out.println(max);
                         return aux;
                     } else {
                         pastStates.add(auxState);
                         statePriorityQueue.addAll(getLeaves(aux));
-                        if (statePriorityQueue.size() > max)
-                            max = statePriorityQueue.size();
-                        /*System.out.println(max);
+                        System.out.println(getExploredStates());
                         System.out.println(statePriorityQueue.size());
-                        System.out.println(pastStates.size());
-                        System.out.println();*/
-                        System.out.println(aux.size());
-                        System.out.println(statePriorityQueue.size() * aux.size());
                         System.out.println();
                     }
                 }

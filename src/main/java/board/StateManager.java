@@ -110,6 +110,7 @@ public class StateManager {
         Square aux = currentState.getMatrix().get(j).get(i);
         currentState.getAquariums().get(aux.getAquariumIdentifier()).squareIsClicked(aux);
         currentState.increaseDepth();
+        System.out.println("iooioi");
     }
 
     public void reset() {
