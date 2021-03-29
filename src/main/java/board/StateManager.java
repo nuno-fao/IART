@@ -10,9 +10,16 @@ public class StateManager {
     public static List<Integer> horizontalCount, verticalCount;
     public static int[][] board;
     private Thread solver;
-
     private State currentState;
     private State solution;
+
+    public Thread getSolver() {
+        return solver;
+    }
+
+    public State getSolution() {
+        return solution;
+    }
 
     public StateManager(int width, int height, List<Integer> horizontalCount, List<Integer> verticalCount) {
         StateManager.width = width;
@@ -25,6 +32,7 @@ public class StateManager {
     }
 
     public static State restartBoard() {
+
         List<Aquarium> aquariums = new ArrayList<>();
 
         List<List<Square>> matrix = new ArrayList<>();
@@ -122,8 +130,13 @@ public class StateManager {
     }
 
     public void reset() {
-        State reset = restartBoard();
-        this.currentState.setSol2(reset.getState2(), reset.getAquariums());
+        //State reset = restartBoard();
+        //this.currentState.setSol2(reset.getState2(), reset.getAquariums());
+        currentState.reset();
+    }
+
+    public void giveSolution(){
+        currentState.setSol2(solution.getState2(),solution.getAquariums());
     }
 
     public void changeLevel(String board,List<Integer> hc,List<Integer> vc){

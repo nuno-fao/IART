@@ -260,6 +260,12 @@ public class State implements Serializable {
         this.heuristic = squaresLeft;
     }
 
+    public void reset(){
+        for(Aquarium aquarium:aquariums){
+            aquarium.unpaintDownTo(0);
+        }
+    }
+
     public void increaseDepth() {
         this.depth++;
     }

@@ -4,8 +4,6 @@ import board.PredefinedProblem;
 import board.Square;
 import board.State;
 import board.StateManager;
-import graph.Graph;
-import graph.Greedy;
 
 import javax.swing.*;
 import java.awt.*;
@@ -72,17 +70,17 @@ class Rects extends JPanel {
 
     private void drawButtons(){
         JButton easy = new JButton("EASY");
-        easy.setBounds(w + 15, 30, 150, 50);
+        easy.setBounds(w + 15, 20, 150, 50);
         easy.addActionListener(new LevelChanger(0));
         add(easy);
 
         JButton medium = new JButton("MEDIUM");
-        medium.setBounds(w + 15, 100, 150, 50);
+        medium.setBounds(w + 15, 80, 150, 50);
         medium.addActionListener(new LevelChanger(1));
         add(medium);
 
         JButton hard = new JButton("HARD");
-        hard.setBounds(w + 15, 170, 150, 50);
+        hard.setBounds(w + 15, 140, 150, 50);
         hard.addActionListener(new LevelChanger(2));
         add(hard);
 
@@ -91,15 +89,46 @@ class Rects extends JPanel {
         //custom.addActionListener(new LevelChanger(3));
         //add(custom);
 
-        JButton hint = new JButton("HINT");
-        hint.setBounds(w + 15, 240, 150, 50);
-        hint.addActionListener(new Helper());
-        add(hint);
-
         JButton reset = new JButton("RESET");
-        reset.setBounds(w + 15, 310, 150, 50);
+        reset.setBounds(w + 15, 200, 150, 50);
         reset.addActionListener(new Resetter());
         add(reset);
+
+        drawHelpers();
+    }
+
+    private void drawHelpers(){
+
+        Thread thread = new Thread(()->{
+
+            while(true){
+                if(stateManager.getSolution()!=null){
+                    JButton hint = new JButton("HINT");
+                    hint.setBounds(w + 15, 260, 150, 50);
+                    hint.addActionListener(new Helper());
+                    add(hint);
+
+                    JButton solver = new JButton("SOLVE");
+                    solver.setBounds(w + 15, 320, 150, 50);
+                    solver.addActionListener(new Solver());
+                    add(solver);
+                    revalidate();
+                    repaint();
+                    break;
+                }
+                else{
+                    try {
+                        Thread.sleep(200);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+
+
+        });
+
+        thread.start();
     }
 
 
@@ -256,10 +285,19 @@ class Rects extends JPanel {
         }
     }
 
-    private class Helper implements ActionListener {
+    class Helper implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {
             System.out.println(e.toString());
+        }
+    }
+
+    class Solver implements ActionListener {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            stateManager.giveSolution();
+            revalidate();
+            repaint();
         }
     }
 
