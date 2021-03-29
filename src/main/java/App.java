@@ -22,11 +22,11 @@ public class App {
                 "5 4 4 4 4 4;"));
 
         problems.add(new PredefinedProblem(new ArrayList<>(Arrays.asList(1,5,3,2,2,2)), new ArrayList<>(Arrays.asList(2,3,3,1,3,3)), "0 1 1 2 3 4;" +
-                "0 6 6 5 5 4;" +
+                "0 5 5 6 6 4;" +
                 "7 8 8 8 9 9;" +
                 "7 10 10 11 11 12;" +
-                "7 14 15 16 17 12;" +
-                "7 14 15 16 17 13;"));
+                "7 13 14 15 16 12;" +
+                "7 13 14 15 16 17;"));
 
         problems.add(new PredefinedProblem(new ArrayList<>(Arrays.asList(6,6,7,4,4,4,4,4,7,2)), new ArrayList<>(Arrays.asList(8,8,4,5,1,3,3,5,2,9)), "0 0 1 2 2 2 2 2 2 2;"+
                 "0 1 1 2 2 2 2 3 3 4;"+
@@ -54,23 +54,11 @@ public class App {
 
         a.stateManager = new StateManager(h.size(),v.size(), h , v);
 
-        long startTime = System.currentTimeMillis();
+
 
         State initial = a.stateManager.readBoard(bs);
 
         a.view = new View(67 * h.size(), 67 * v.size(), a.stateManager, initial, a.problems);
 
-        Thread solve = new Thread(() -> {
-            Graph graph = new Graph(new Greedy(), h, v);
-            State initial2 = graph.solve(a.stateManager.getCurrentState());
-            System.out.println("AStar explored " + graph.getExploredStates() + " states and solution has depth of " + initial2.getDepth() + ": " + (System.currentTimeMillis() - startTime));
-            for (String s : initial2.getState().split(";")) {
-                System.out.println(s);
-            }
-            //a.stateManager.getCurrentState().copy(initial2);
-            //a.view.reload();
-        });
-
-        solve.start();
     }
 }

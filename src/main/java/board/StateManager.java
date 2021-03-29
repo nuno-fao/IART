@@ -1,13 +1,18 @@
 package board;
 
+import graph.Graph;
+import graph.Greedy;
+
 import java.util.*;
 
 public class StateManager {
     public static int width, height;
     public static List<Integer> horizontalCount, verticalCount;
     public static int[][] board;
+    private Thread solver;
 
     private State currentState;
+    private State solution;
 
     public StateManager(int width, int height, List<Integer> horizontalCount, List<Integer> verticalCount) {
         StateManager.width = width;
@@ -15,6 +20,8 @@ public class StateManager {
         StateManager.horizontalCount = horizontalCount;
         StateManager.verticalCount = verticalCount;
         board = new int[width][height];
+        solver=null;
+        solution=null;
     }
 
     public static State restartBoard() {
@@ -101,6 +108,8 @@ public class StateManager {
 
         this.currentState = new State(matrix, aquariums, 0);
 
+        solve();
+
         return currentState;
     }
 
@@ -118,11 +127,30 @@ public class StateManager {
     }
 
     public void changeLevel(String board,List<Integer> hc,List<Integer> vc){
+        if(solver!=null){
+            solver.stop();
+        }
         width=hc.size();
         height=vc.size();
         horizontalCount=hc;
         verticalCount=vc;
+        solver=null;
+        solution=null;
         readBoard(board);
+    }
+
+    public void solve(){
+
+        solver = new Thread(() -> {
+            Graph graph = new Graph(new Greedy(), horizontalCount, verticalCount);
+            long startTime = System.currentTimeMillis();
+            solution = graph.solve(getCurrentState());
+            System.out.println("AStar explored " + graph.getExploredStates() + " states and solution has depth of " + solution.getDepth() + ": " + (System.currentTimeMillis() - startTime));
+            for (String s : solution.getState().split(";")) {
+                System.out.println(s);
+            }
+        });
+        solver.start();
     }
 
 }

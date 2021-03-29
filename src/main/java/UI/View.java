@@ -4,6 +4,8 @@ import board.PredefinedProblem;
 import board.Square;
 import board.State;
 import board.StateManager;
+import graph.Graph;
+import graph.Greedy;
 
 import javax.swing.*;
 import java.awt.*;
@@ -260,6 +262,8 @@ class Rects extends JPanel {
             System.out.println(e.toString());
         }
     }
+
+
 
 
 }
