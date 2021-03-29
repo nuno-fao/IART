@@ -166,4 +166,25 @@ public class StateManager {
         solver.start();
     }
 
+    public void giveHint(){
+
+        for(int i=0;i<currentState.getAquariums().size();i++){
+            for(int j=0;j<currentState.getAquariums().get(i).getLevels().size();j++){
+                if(currentState.getAquariums().get(i).getLevels().get(j).isPainted() && !solution.getAquariums().get(i).getLevels().get(j).isPainted()){
+                    currentState.getAquariums().get(i).unpaintDownTo(j);
+                    return;
+                }
+            }
+        }
+
+        for(int i=0;i<currentState.getAquariums().size();i++){
+            for(int j=0;j<currentState.getAquariums().get(i).getLevels().size();j++){
+                if(!currentState.getAquariums().get(i).getLevels().get(j).isPainted() && solution.getAquariums().get(i).getLevels().get(j).isPainted()){
+                    currentState.getAquariums().get(i).getLevels().get(j).paint();
+                    return;
+                }
+            }
+        }
+    }
+
 }
