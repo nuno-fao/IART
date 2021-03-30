@@ -21,6 +21,12 @@ public class StateManager {
         return solution;
     }
 
+    public boolean reachedToTheSolution(){
+        if(solution == null)
+            return false;
+        return currentState.equals(solution);
+    }
+
     public StateManager(int width, int height, List<Integer> horizontalCount, List<Integer> verticalCount) {
         StateManager.width = width;
         StateManager.height = height;

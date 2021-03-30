@@ -64,7 +64,6 @@ class Rects extends JPanel {
         this.addMouseListener(new MouseClick());
 
         drawButtons();
-
         setLayout(null);
     }
 
@@ -95,6 +94,13 @@ class Rects extends JPanel {
         add(reset);
 
         drawHelpers();
+    }
+
+    private void drawWinnerMessage() {
+        JLabel jLabel = new JLabel("<html><font color='orange' size='5'>Congratulations you have completed the puzzle!!!</font></html>");
+        jLabel.setBounds(w/2-200 , h, 450, 25);
+        if (stateManager.reachedToTheSolution())
+            add(jLabel);
     }
 
     private void drawHelpers(){
@@ -147,7 +153,7 @@ class Rects extends JPanel {
         paintBorders(g, amountW, amountH, borderColor);
 
         paintNumbers(g, amountW, amountH);
-
+        drawWinnerMessage();
     }
 
     private void paintNumbers(Graphics g, int w, int h) {
@@ -171,8 +177,12 @@ class Rects extends JPanel {
                 int l_y = (int) (h * y * 1.1 + 5);
                 if (!s.isPainted())
                     drawRectangle(g, color, l_x - 2.5, l_y - 2.5, w + 5, h + 5);
-                else
-                    drawRectangle(g, Color.cyan, l_x - 2.5, l_y - 2.5, w + 5, h + 5);
+                else {
+                    if(stateManager.reachedToTheSolution())
+                        drawRectangle(g, Color.orange, l_x - 2.5, l_y - 2.5, w + 5, h + 5);
+                    else
+                        drawRectangle(g, Color.cyan, l_x - 2.5, l_y - 2.5, w + 5, h + 5);
+                }
                 x++;
             }
             y++;
@@ -235,7 +245,7 @@ class Rects extends JPanel {
             int x = e.getX();
             int y = e.getY();
 
-            if (x <= w && y <= h) {
+            if ((x <= w && y <= h) && (!stateManager.reachedToTheSolution())) {
                 stateManager.actOnClick(x, y);
                 revalidate();
                 repaint();
@@ -247,6 +257,8 @@ class Rects extends JPanel {
     private class Resetter implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {
+            removeAll();
+            drawButtons();
             stateManager.reset();
             revalidate();
             repaint();
