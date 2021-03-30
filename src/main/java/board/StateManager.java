@@ -1,5 +1,6 @@
 package board;
 
+import graph.AStar;
 import graph.Graph;
 import graph.Greedy;
 
@@ -136,7 +137,7 @@ public class StateManager {
     }
 
     public void giveSolution(){
-        currentState.setSol2(solution.getState2(),solution.getAquariums());
+        currentState.setSol2(solution.getAquariums());
     }
 
     public void changeLevel(String board,List<Integer> hc,List<Integer> vc){
@@ -155,7 +156,7 @@ public class StateManager {
     public void solve(){
 
         solver = new Thread(() -> {
-            Graph graph = new Graph(new Greedy(), horizontalCount, verticalCount);
+            Graph graph = new Graph(new AStar(), horizontalCount, verticalCount);
             long startTime = System.currentTimeMillis();
             solution = graph.solve(getCurrentState());
             System.out.println("AStar explored " + graph.getExploredStates() + " states and solution has depth of " + solution.getDepth() + ": " + (System.currentTimeMillis() - startTime));

@@ -110,18 +110,6 @@ public class State implements Serializable {
         return uk;
     }
 
-    public boolean[][] getState2() {
-        boolean[][] out = new boolean[StateManager.height][StateManager.width];
-        int y = 0;
-        for (List<Square> squares : matrix) {
-            for (int j = 0; j < StateManager.width; j++) {
-                out[y][j] = squares.get(j).isPainted();
-            }
-            y++;
-        }
-        return out;
-    }
-
     public boolean isFinished(List<Integer> horizontalCount, List<Integer> verticalCount) {
         if (squaresLeft == null)
             squaresLeft = getSquaresLeft(horizontalCount, verticalCount);
@@ -215,25 +203,12 @@ public class State implements Serializable {
     //deep copies the state
     public State copy() {
         State out = StateManager.restartBoard();
-        out.setSol2(getState2(), aquariums);
+        out.setSol2(aquariums);
         out.depth = depth;
         return out;
     }
 
-    public void copy(State s) {
-        setSol2(getState2(), s.getAquariums());
-        depth = s.depth;
-    }
-
-    public void setSol2(boolean[][] sol, List<Aquarium> aquariums) {
-        for (int y = 0; y < StateManager.height; y++) {
-            for (int x = 0; x < StateManager.width; x++) {
-                if (sol[y][x])
-                    matrix.get(y).get(x).paint();
-                else
-                    matrix.get(y).get(x).unpaint();
-            }
-        }
+    public void setSol2(List<Aquarium> aquariums) {
         for (int a = 0; a < aquariums.size(); a++) {
             List<Level> local_level = this.aquariums.get(a).getLevels();
             List<Level> copied_level = aquariums.get(a).getLevels();
@@ -245,6 +220,32 @@ public class State implements Serializable {
                 }
             }
         }
+    }
+
+    public void setSol(List<int[]> aqs){
+        for(int a[]:aqs){
+            this.aquariums.get(a[0]).getLevels().get(a[1]).paint();
+        }
+    }
+
+    public List<int[]> getState2() {
+        int y = 0;
+        int x;
+        List<int[]> out = new ArrayList<>();
+        for(Aquarium aquarium:aquariums){
+            x=0;
+            for(Level level:aquarium.getLevels()){
+                if(level.isPainted())
+                    out.add(new int[]{y, x});
+                x++;
+            }
+            y++;
+        }
+        return out;
+    }
+
+    public void setDepth(int depth) {
+        this.depth = depth;
     }
 
     //increases depth and sets heuristic
