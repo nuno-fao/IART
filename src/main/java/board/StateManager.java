@@ -21,6 +21,10 @@ public class StateManager {
         return solution;
     }
 
+    public boolean reachedToTheSolution(){
+        return currentState.getSquaresLeft(horizontalCount,verticalCount) == 0;
+    }
+
     public StateManager(int width, int height, List<Integer> horizontalCount, List<Integer> verticalCount) {
         StateManager.width = width;
         StateManager.height = height;
@@ -184,6 +188,34 @@ public class StateManager {
                     return;
                 }
             }
+        }
+    }
+
+    public void getLeftSquares(List<Integer> h,List<Integer> v){
+
+
+        int  y = 0;
+        if(h == null)
+            h = new ArrayList<>();
+        if(v == null)
+            v = new ArrayList<>();
+        for(List<Square> l: currentState.getMatrix()){
+            int sum = 0;
+            for(Square s:l){
+                if(s.isPainted())
+                    sum++;
+            }
+            v.add(verticalCount.get(y)-sum);
+            y++;
+        }
+
+        for(int x = 0; x < currentState.getMatrix().get(0).size(); x++){
+            int sum = 0;
+            for(y = 0; y < currentState.getMatrix().size(); y++){
+                if(currentState.getMatrix().get(y).get(x).isPainted())
+                    sum++;
+            }
+            h.add(horizontalCount.get(x)-sum);
         }
     }
 
