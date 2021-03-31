@@ -22,9 +22,7 @@ public class StateManager {
     }
 
     public boolean reachedToTheSolution(){
-        if(solution == null)
-            return false;
-        return currentState.equals(solution);
+        return currentState.getSquaresLeft(horizontalCount,verticalCount) == 0;
     }
 
     public StateManager(int width, int height, List<Integer> horizontalCount, List<Integer> verticalCount) {
@@ -208,10 +206,8 @@ public class StateManager {
                     sum++;
             }
             v.add(verticalCount.get(y)-sum);
-            System.out.print(sum+" ");
             y++;
         }
-        System.out.println();
 
         for(int x = 0; x < currentState.getMatrix().get(0).size(); x++){
             int sum = 0;
@@ -220,10 +216,7 @@ public class StateManager {
                     sum++;
             }
             h.add(horizontalCount.get(x)-sum);
-            System.out.print(sum+" ");
         }
-        System.out.println();
-        System.out.println();
     }
 
 }

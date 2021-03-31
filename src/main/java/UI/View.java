@@ -26,7 +26,7 @@ public class View {
         mainFrame = new JFrame("Aquarium");
         mainFrame.setSize(width + 200, height + 5);
         Dimension d = new Dimension();
-        d.setSize(width + 200, height + 5);
+        d.setSize(width + 200, height + 100);
         mainFrame.getContentPane().setPreferredSize(d);
         mainFrame.pack();
         mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -48,6 +48,7 @@ class Rects extends JPanel {
     int h;
     Color color;
     final List<PredefinedProblem> problems;
+    Boolean solved = false;
 
 
     public Rects(StateManager stateManager, State currentState, int w, int h, Color color, List<PredefinedProblem> problems) {
@@ -98,10 +99,11 @@ class Rects extends JPanel {
     }
 
     private void drawWinnerMessage() {
-        JLabel jLabel = new JLabel("<html><font color='orange' size='5'>Congratulations you have completed the puzzle!!!</font></html>");
+        JLabel jLabel = new JLabel("<html><font color='orange' size='4'>Congratulations you have completed the puzzle!!!</font></html>");
         jLabel.setBounds(w/2-200 , h, 450, 25);
-        if (stateManager.reachedToTheSolution())
+        if (stateManager.reachedToTheSolution() && !solved)
             add(jLabel);
+        solved = true;
     }
 
     private void drawHelpers(){
@@ -138,6 +140,12 @@ class Rects extends JPanel {
         thread.start();
     }
 
+    @Override
+    public void revalidate(){
+        super.revalidate();
+        solved = false;
+    }
+
 
     @Override
     public void paintComponent(Graphics g) {
@@ -159,7 +167,6 @@ class Rects extends JPanel {
 
     private void paintNumbers(Graphics g, int w, int h) {
         g.setFont(new Font("default", Font.BOLD, 16));
-        //System.out.println(board.getHorizontalCount());
         List<Integer> horizontal = new ArrayList<>();
         List<Integer> vertical = new ArrayList<>();
 
@@ -310,7 +317,6 @@ class Rects extends JPanel {
             getRootPane().getContentPane().setPreferredSize(d);
 
             currentState=stateManager.getCurrentState();
-
             revalidate();
             repaint();
 
