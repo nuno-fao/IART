@@ -8,12 +8,39 @@ import graph.Order;
 import java.util.*;
 
 public class StateManager {
+    /**
+     * Board's width and height.
+     */
     public static int width, height;
+
+    /**
+     * Board's horizontal and vertical numbers.
+     */
     public static List<Integer> horizontalCount, verticalCount;
+
+    /**
+     * The board.
+     */
     public static int[][] board;
+
+    /**
+     * Thread that will solve the problem.
+     */
     private Thread solver;
+
+    /**
+     * The state that the user will operate on.
+     */
     private State currentState;
+
+    /**
+     * Solution reached by the solver thread. Null by default
+     */
     private State solution;
+
+    /**
+     * Search method that will be used to solve the problem
+     */
     private Order algorithm;
 
     public Thread getSolver() {
@@ -24,6 +51,9 @@ public class StateManager {
         return solution;
     }
 
+    /**
+     * Verifies if the current state is a solution to the problem.
+     */
     public boolean reachedToTheSolution(){
         return currentState.getSquaresLeft(horizontalCount,verticalCount) == 0;
     }
@@ -39,6 +69,9 @@ public class StateManager {
         this.algorithm = algorithm;
     }
 
+    /**
+     * Resets the board.
+     */
     public static State restartBoard() {
 
         List<Aquarium> aquariums = new ArrayList<>();
@@ -84,12 +117,20 @@ public class StateManager {
         return verticalCount;
     }
 
-    //creates initial state from a board string
+
+    /**
+     * Creates initial state from a board string.
+     * @param s board string.
+     * @return initial state.
+     */
     public State readBoard(String s) {
 
         board = new int[width][height];
-        //todo
+
         HashMap<Integer, Aquarium> aqMap = new HashMap<>();
+
+        //create square matrix
+
         List<Aquarium> aquariums = new ArrayList<>();
 
         List<List<Square>> matrix = new ArrayList<>();
@@ -100,6 +141,7 @@ public class StateManager {
             }
         }
 
+        //create separaate aquariums
         String[] lines = s.split(";");
         for (int y = 0; y < lines.length; y++) {
             String[] pos = lines[y].split(" ");
@@ -119,16 +161,26 @@ public class StateManager {
             }
         }
 
+        //work on the aquariums before starting
         for (Aquarium aquarium : aquariums)
             aquarium.process();
 
+        //create current state
         this.currentState = new State(matrix, aquariums, 0);
 
+        //start solver thread
         solve();
 
         return currentState;
     }
 
+    /**
+     * Receives coordenates, identifies the squares that was clicked on and paints the aquarium up to the square level.
+     * If it is already painted, unpaints the aquarium down to the square level.
+     * Also updates depth.
+     * @param clickX x coordinate.
+     * @param clickY y coordinate.
+     */
     public void actOnClick(int clickX, int clickY) {
         int i = clickX / 67;
         int j = clickY / 67;
@@ -137,16 +189,28 @@ public class StateManager {
         currentState.increaseDepth();
     }
 
+    /**
+     * Unpaints every level on the current state.
+     */
     public void reset() {
         //State reset = restartBoard();
         //this.currentState.setSol2(reset.getState2(), reset.getAquariums());
         currentState.reset();
     }
 
+    /**
+     * Copies the solution reched by the solver thread to the current state.
+     */
     public void giveSolution(){
         currentState.setSol2(solution.getAquariums());
     }
 
+    /**
+     * Changes the problem shown.
+     * @param board board string.
+     * @param hc horizontal numbers.
+     * @param vc vertical numbers.
+     */
     public void changeLevel(String board,List<Integer> hc,List<Integer> vc){
         if(solver!=null){
             solver.stop();
@@ -160,16 +224,19 @@ public class StateManager {
         readBoard(board);
     }
 
+    /**
+     * Initiates solver thread to reach the solution.
+     */
     public void solve(){
 
         solver = new Thread(() -> {
             Graph graph = new Graph(this.algorithm, horizontalCount, verticalCount);
             long startTime = System.currentTimeMillis();
-            if(this.algorithm == null)
+            if(this.algorithm == null)//if no algorythm was specified in the constructor it means iterative deepening should be used
                 solution = graph.solveIterativeDeepening(getCurrentState());//TODO
             else
                 solution = graph.solve(getCurrentState());
-            System.out.println("AStar explored " + graph.getExploredStates() + " states and solution has depth of " + solution.getDepth() + ": " + (System.currentTimeMillis() - startTime));
+            System.out.println("Explored " + graph.getExploredStates() + " states and solution has depth of " + solution.getDepth() + ": " + (System.currentTimeMillis() - startTime));
             for (String s : solution.getState().split(";")) {
                 System.out.println(s);
             }
@@ -177,6 +244,11 @@ public class StateManager {
         solver.start();
     }
 
+    /**
+     * Compares the current state to the solution given by the solver thread.
+     * Checks if there are any levels that shouldn't painted and unpaints them. If none of those are found it paints a level that should be, starting from the lower ones.
+     * Only does one change per call.
+     */
     public void giveHint(){
 
         for(int i=0;i<currentState.getAquariums().size();i++){
@@ -198,6 +270,9 @@ public class StateManager {
         }
     }
 
+    /**
+     * Updates 2 lists with the number of squares left to paint, horizontally and vertically.
+     */
     public void getLeftSquares(List<Integer> h,List<Integer> v){
 
 

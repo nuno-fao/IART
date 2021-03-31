@@ -16,6 +16,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class View {
+    /**
+     * JPanel extender.
+     */
     final Rects a;
 
     private final JFrame mainFrame;
@@ -35,6 +38,9 @@ public class View {
         mainFrame.setVisible(true);
     }
 
+    /**
+     * Repaints the app window.
+     */
     public void reload() {
         mainFrame.revalidate();
         mainFrame.repaint();
@@ -42,12 +48,39 @@ public class View {
 }
 
 class Rects extends JPanel {
+    /**
+     * State that will be painted.
+     */
     State currentState;
+
+    /**
+     * StateManager that will handle operations on the state.
+     */
     StateManager stateManager;
+
+    /**
+     * Window width.
+     */
     int w;
+
+    /**
+     * Window height.
+     */
     int h;
+
+    /**
+     * Background color.
+     */
     Color color;
+
+    /**
+     * List of problems.
+     */
     final List<PredefinedProblem> problems;
+
+    /**
+     * Boolean used to know if the problem is solved or not
+     */
     Boolean solved = false;
 
 
@@ -69,6 +102,9 @@ class Rects extends JPanel {
         setLayout(null);
     }
 
+    /**
+     * Draws buttons to change between problems and reset to problem back to the beginning
+     */
     private void drawButtons(){
         JButton easy = new JButton("EASY");
         easy.setBounds(w + 15, 20, 150, 50);
@@ -85,11 +121,6 @@ class Rects extends JPanel {
         hard.addActionListener(new LevelChanger(2));
         add(hard);
 
-        //JButton custom = new JButton("CUSTOM");
-        //custom.setBounds(w + 15, 200, 150, 50);
-        //custom.addActionListener(new LevelChanger(3));
-        //add(custom);
-
         JButton reset = new JButton("RESET");
         reset.setBounds(w + 15, 200, 150, 50);
         reset.addActionListener(new Resetter());
@@ -98,6 +129,9 @@ class Rects extends JPanel {
         drawHelpers();
     }
 
+    /**
+     * Draws a message on the screen for the user to know he has reached the end
+     */
     private void drawWinnerMessage() {
         JLabel jLabel = new JLabel("<html><font color='orange' size='4'>Congratulations you have completed the puzzle!!!</font></html>");
         jLabel.setBounds(w/2-200 , h, 450, 25);
@@ -106,6 +140,9 @@ class Rects extends JPanel {
         solved = true;
     }
 
+    /**
+     * Periodically verifies if the problem has been solved internally (not by the user). If so it draws the buttons to ask for hints and the solution.
+     */
     private void drawHelpers(){
 
         Thread thread = new Thread(()->{
@@ -147,6 +184,9 @@ class Rects extends JPanel {
     }
 
 
+    /**
+     * Main method that paints the app window.
+     */
     @Override
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
@@ -156,15 +196,23 @@ class Rects extends JPanel {
 
         int amountH = (int) ((h - 10) / (currentState.getMatrix().size() + (currentState.getMatrix().get(0).size() - 1) * 0.1));
         int amountW = (int) ((w - 10) / (currentState.getMatrix().get(0).size() + (currentState.getMatrix().get(0).size() - 1) * 0.1));
-        paintMainSquares(g, amountW, amountH);
-        paintRightSquares(g, amountW, amountH, borderColor);
-        paintDownSquares(g, amountW, amountH, borderColor);
-        paintBorders(g, amountW, amountH, borderColor);
 
-        paintNumbers(g, amountW, amountH);
+        paintMainSquares(g, amountW, amountH);  //paint squares
+        paintRightSquares(g, amountW, amountH, borderColor);    //paint vertical borders on squares
+        paintDownSquares(g, amountW, amountH, borderColor);     //paint horizontal borders on squares
+        paintBorders(g, amountW, amountH, borderColor);     //paint borders around the board
+
+        paintNumbers(g, amountW, amountH);      //draw the horizontal and vertical numbers
+
         drawWinnerMessage();
     }
 
+    /**
+     * Draw the horizontal and vertical numbers on the board.
+     * @param g Graphics from paintComponent.
+     * @param w screen width
+     * @param h screen height
+     */
     private void paintNumbers(Graphics g, int w, int h) {
         g.setFont(new Font("default", Font.BOLD, 16));
         List<Integer> horizontal = new ArrayList<>();
@@ -172,7 +220,7 @@ class Rects extends JPanel {
 
         stateManager.getLeftSquares(horizontal,vertical);
 
-
+        //paint with different colors according to the numbers of squares filled
         for (int i = 0; i < stateManager.getHorizontalCount().size(); i++) {
             if(horizontal.get(i) < 0)
                 g.setColor(Color.RED);
@@ -194,6 +242,12 @@ class Rects extends JPanel {
         }
     }
 
+    /**
+     * Draw the main board (all squares).
+     * @param g Graphics from paintComponent.
+     * @param w screen width
+     * @param h screen height
+     */
     private void paintMainSquares(Graphics g, int w, int h) {
         int x ;
         int y = 0;
@@ -216,6 +270,13 @@ class Rects extends JPanel {
         }
     }
 
+    /**
+     * Draw the board borders.
+     * @param g Graphics from paintComponent.
+     * @param w screen width
+     * @param h screen height
+     * @param border color of the borders
+     */
     private void paintBorders(Graphics g, int w, int h, Color border) {
         drawRectangle(g, border, 0, 0, currentState.getMatrix().get(0).size() * (w + 6), h * 0.08);
         drawRectangle(g, border, 0, currentState.getMatrix().size() * (h + 6), currentState.getMatrix().get(0).size() * (w + 6), h * 0.08);
@@ -224,6 +285,13 @@ class Rects extends JPanel {
         drawRectangle(g, border, currentState.getMatrix().get(0).size() * (w + 6), 0, w * 0.08, currentState.getMatrix().size() * (h + 6) + 5);
     }
 
+    /**
+     * Draw the vertical border on the squares.
+     * @param g Graphics from paintComponent.
+     * @param w screen width
+     * @param h screen height
+     * @param border color of the borders
+     */
     private void paintRightSquares(Graphics g, int w, int h, Color border) {
         for (int y = 0; y < currentState.getMatrix().size(); y++) {
             for (int x = 0; x < currentState.getMatrix().get(0).size() - 1; x++) {
@@ -236,6 +304,13 @@ class Rects extends JPanel {
         }
     }
 
+    /**
+     * Draw the horizontal border on the squares.
+     * @param g Graphics from paintComponent.
+     * @param w screen width
+     * @param h screen height
+     * @param border color of the borders
+     */
     private void paintDownSquares(Graphics g, int w, int h, Color border) {
         for (int y = 0; y < currentState.getMatrix().size() - 1; y++) {
             for (int x = 0; x < currentState.getMatrix().get(0).size(); x++) {
@@ -249,7 +324,10 @@ class Rects extends JPanel {
     }
 
 
-    private void drawRectangle(Graphics g, Color color, double x, double y, double width, double height) //centers rectangle
+    /**
+     * Centers rectangle.
+     */
+    private void drawRectangle(Graphics g, Color color, double x, double y, double width, double height)
     {
         Graphics2D g2 = (Graphics2D) g;
         Rectangle2D rect = new Rectangle2D.Double(x, y, width, height);
@@ -265,8 +343,14 @@ class Rects extends JPanel {
     }
 
 
+    /**
+     * Class that will receive mouse events and handle them.
+     */
     private class MouseClick extends MouseAdapter {
 
+        /**
+         * Receives mouse click event and if is inside the main board, sends the coordinates to the state manager for it to paint/unpaint levels on the state.
+         */
         @Override
         public void mouseClicked(MouseEvent e) {
             int x = e.getX();
@@ -281,7 +365,13 @@ class Rects extends JPanel {
         }
     }
 
+    /**
+     * Listener for the reset button.
+     */
     private class Resetter implements ActionListener {
+        /**
+         * Resets state back to beggining.
+         */
         @Override
         public void actionPerformed(ActionEvent e) {
             removeAll();
@@ -292,6 +382,9 @@ class Rects extends JPanel {
         }
     }
 
+    /**
+     * Listener for the level buttons.
+     */
     private class LevelChanger implements ActionListener {
         final int level;
 
@@ -299,6 +392,9 @@ class Rects extends JPanel {
             this.level = level;
         }
 
+        /**
+         * Changes level to the specified on the contructor.
+         */
         @Override
         public void actionPerformed(ActionEvent e) {
             w=problems.get(level).getH().size()*67 + 10;
@@ -323,6 +419,9 @@ class Rects extends JPanel {
         }
     }
 
+    /**
+     * Listener for the hint button.
+     */
     class Helper implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {
@@ -332,6 +431,9 @@ class Rects extends JPanel {
         }
     }
 
+    /**
+     * Listener for the solve button.
+     */
     class Solver implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {

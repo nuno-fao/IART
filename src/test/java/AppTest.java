@@ -189,7 +189,7 @@ class AppTest {
         //assertEquals(toSolve.getSquaresLeft(),0);
         //assertEquals(toSolve.getAllUnpaintedLevels().size(),0);
 
-    }*/
+    }
     Graph graph ;
     State solution ;
     StateManager stateManager;
@@ -397,6 +397,6 @@ class AppTest {
         for(String s : solution.getState().split(";")){
             System.out.println(s);
         }
-    }
+    }*/
 
 }
