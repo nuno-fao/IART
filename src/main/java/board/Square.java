@@ -10,7 +10,7 @@ public class Square implements Serializable {
     }
 
     boolean painted;
-    final int aquariumIdentifier;
+    int aquariumIdentifier;
 
     public Square(int y, boolean painted, int aquariumIdentifier) {
         this.y = y;
@@ -35,10 +35,14 @@ public class Square implements Serializable {
         return aquariumIdentifier;
     }
 
+    public void setAquariumIdentifier(int aquariumIdentifier) {
+        this.aquariumIdentifier = aquariumIdentifier;
+    }
 
     public String getCmdOutput() {
         return aquariumIdentifier + (painted ? "F " : "  ");
     }
+
 
 
 

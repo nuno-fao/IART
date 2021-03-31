@@ -27,12 +27,14 @@ application {
 
 task astar(type: JavaExec) {
     classpath sourceSets.main.runtimeClasspath
+    maxHeapSize = "12g"
     main = "App"
     args "astar"
 }
 
 task breathfirst(type: JavaExec) {
     classpath sourceSets.main.runtimeClasspath
+    maxHeapSize = "12g"
     main = "App"
     args "breathfirst"
 }

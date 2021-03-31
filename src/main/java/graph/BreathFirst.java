@@ -23,4 +23,9 @@ public class BreathFirst implements Order {
         s.updateDepth(h, v);
 
     }
+
+    @Override
+    public String name() {
+        return "Breath First";
+    }
 }

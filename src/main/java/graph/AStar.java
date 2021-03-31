@@ -28,4 +28,9 @@ public class AStar implements Order {
     public void setCostAndHeuristic(State s, List<Integer> h, List<Integer> v) {
         s.updateCostAndHeuristic(h, v);
     }
+
+    @Override
+    public String name() {
+        return "A*";
+    }
 }

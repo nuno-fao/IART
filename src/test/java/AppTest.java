@@ -212,7 +212,7 @@ class AppTest {
 
         h = new ArrayList<>(Arrays.asList(4, 5, 3, 3, 2, 2));
         v = new ArrayList<>(Arrays.asList(3, 1, 2, 3, 5, 5));
-        stateManager = new StateManager(6,6, h , v);
+        stateManager = new StateManager(6,6, h , v,new DepthFirst());
         sol = "1 1 1 0 0 0;" +
                 "1 0 0 0 0 0;" +
                 "1 1 0 0 0 0;" +
@@ -243,7 +243,7 @@ class AppTest {
 
         h = new ArrayList<>(Arrays.asList(6,6,5,4,6,10,11,12,8,5,6,7,11,8,5));
         v = new ArrayList<>(Arrays.asList(11,7,10,5,7,8,10,9,7,6,8,3,5,3,11));
-        stateManager = new StateManager(15,15, h , v);
+        stateManager = new StateManager(15,15, h , v,new DepthFirst());
 
         testSol = false;
     }
@@ -260,7 +260,7 @@ class AppTest {
 
         h = new ArrayList<>(Arrays.asList(5, 5, 2, 4, 5, 3));
         v = new ArrayList<>(Arrays.asList(4, 2, 3, 5, 5, 5));
-        stateManager = new StateManager(6,6, h , v);
+        stateManager = new StateManager(6,6, h , v,new DepthFirst());
         testSol = false;
     }
 
@@ -275,7 +275,7 @@ class AppTest {
 
         h = new ArrayList<>(Arrays.asList(2, 5, 5, 5, 2, 3));
         v = new ArrayList<>(Arrays.asList(4, 4, 2, 5, 2, 5));
-        stateManager = new StateManager(6,6, h , v);
+        stateManager = new StateManager(6,6, h , v,new DepthFirst());
         testSol = false;
     }
 
@@ -291,7 +291,7 @@ class AppTest {
 
         h = new ArrayList<>(Arrays.asList(2, 3, 5, 4, 5, 3));
         v = new ArrayList<>(Arrays.asList(4, 2, 3, 5, 4, 4));
-        stateManager = new StateManager(6,6, h , v);
+        stateManager = new StateManager(6,6, h , v,new DepthFirst());
         testSol = false;
     }
 
@@ -311,7 +311,7 @@ class AppTest {
 
         h = new ArrayList<>(Arrays.asList(6,6,7,4,4,4,4,4,7,2));
         v = new ArrayList<>(Arrays.asList(8,8,4,5,1,3,3,5,2,9));
-        stateManager = new StateManager(10,10, h , v);
+        stateManager = new StateManager(10,10, h , v,new DepthFirst());
         testSol = false;
     }
 
@@ -327,7 +327,7 @@ class AppTest {
         List<Integer> h = new ArrayList<>(Arrays.asList(4, 5, 3, 3, 2, 2));
         List<Integer> v = new ArrayList<>(Arrays.asList(3, 1, 2, 3, 5, 5));
 
-        StateManager stateManager = new StateManager(6,6, h , v);
+        StateManager stateManager = new StateManager(6,6, h , v,new DepthFirst());
         State initial = stateManager.readBoard(bs);
         State copy = initial.copy();
 

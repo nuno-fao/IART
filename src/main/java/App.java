@@ -13,7 +13,7 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
-
+import java.util.Scanner;
 import static java.lang.Integer.valueOf;
 
 public class App {
@@ -34,6 +34,7 @@ public class App {
         String bs;
 
         int startingProblem=0; //chooses the problem that will be shown when the game opens, value between 0 and 2
+
 
         bs = a.problems.get(startingProblem).getBoardString();
         List<Integer> h =  a.problems.get(startingProblem).getH();

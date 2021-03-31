@@ -146,7 +146,7 @@ public class StateManager {
         for (int y = 0; y < lines.length; y++) {
             String[] pos = lines[y].split(" ");
             for (int x = 0; x < pos.length; x++) {
-                Square tempSquare = new Square( y, false, Integer.parseInt(pos[x]));
+                Square tempSquare = new Square(y, false, Integer.parseInt(pos[x]));
                 Aquarium tempAquarium;
                 if (!aqMap.containsKey(tempSquare.getAquariumIdentifier())) {
                     tempAquarium = new Aquarium();
@@ -164,12 +164,12 @@ public class StateManager {
         //work on the aquariums before starting
         for (Aquarium aquarium : aquariums)
             aquarium.process();
-
         //create current state
         this.currentState = new State(matrix, aquariums, 0);
 
         //start solver thread
         solve();
+
 
         return currentState;
     }
@@ -234,11 +234,11 @@ public class StateManager {
             long startTime = System.currentTimeMillis();
             if(this.algorithm == null)//if no algorythm was specified in the constructor it means iterative deepening should be used
                 solution = graph.solveIterativeDeepening(getCurrentState());//TODO
-            else
+                System.out.println("Iterative Deepening explored " + graph.getExploredStates() + " states and solution has depth of " + solution.getDepth() + ": " + (System.currentTimeMillis() - startTime));
+            }
+            else {
                 solution = graph.solve(getCurrentState());
-            System.out.println("Explored " + graph.getExploredStates() + " states and solution has depth of " + solution.getDepth() + ": " + (System.currentTimeMillis() - startTime));
-            for (String s : solution.getState().split(";")) {
-                System.out.println(s);
+                System.out.println(graph.getComparator().name()+" explored " + graph.getExploredStates() + " states and solution has depth of " + solution.getDepth() + ": " + (System.currentTimeMillis() - startTime));
             }
         });
         solver.start();

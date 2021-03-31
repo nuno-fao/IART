@@ -31,6 +31,7 @@ public class Graph {
      * Vertical numbers on the board.
      */
     private final List<Integer> verticalCount;
+    private int explored = 0;
 
     public Graph(Order comparator, List<Integer> horizontalCount, List<Integer> verticalCount) {
         this.comparator = comparator;
@@ -53,15 +54,17 @@ public class Graph {
             for (int j = 0; j < state.getAquariums().get(i).getLevels().size(); j++) {
                 if (!state.getAquariums().get(i).getLevels().get(j).isPainted()) {
                     State aux = state.copy();
-                    if (!aux.paint(i, j))
+                    if (!aux.paint(i, j)) {
                         System.out.println("Level " + i + " does not exist on aquarium " + j + " or the aquarium itself.");
-
-                    comparator.setCostAndHeuristic(aux, horizontalCount, verticalCount);
-                    if (aux.getHeuristic() != -1 && !pastStates.contains(aux.getUK())) {
-                        List<int[]> l = new ArrayList<>(boardState);
-                        l.add(new int[]{i, j});
-                        out.add(new ProvState(l,aux.getDepth(),aux.getHeuristic()));
+                        continue;
                     }
+
+                        comparator.setCostAndHeuristic(aux, horizontalCount, verticalCount);
+                        if (aux.getHeuristic() != -1 && !pastStates.contains(aux.getState())) {
+                            List<int[]> l = new ArrayList<>(boardState);
+                            l.add(new int[]{i, j});
+                            out.add(new ProvState(l, aux.getDepth(), aux.getHeuristic()));
+                        }
                 }
             }
         }
@@ -72,7 +75,7 @@ public class Graph {
      * Returns the size of container of already explored states
      */
     public int getExploredStates() {
-        return pastStates.size();
+        return explored;
     }
 
     /**
@@ -91,6 +94,7 @@ public class Graph {
                 if (aux != null) {  //check if there are any states on the queue
                     String auxState = aux.getUK();
                     if (!pastStates.contains(auxState)) {
+                        explored++;
                         if (aux.isFinished(horizontalCount, verticalCount)) {   //solution found
                             return aux;
                         } else if(aux.getDepth()<max) { //only add new leaves to the queue if it is not on the max depth
@@ -110,7 +114,6 @@ public class Graph {
                 }
             }
         }
-
     }
 
     /**
@@ -121,24 +124,28 @@ public class Graph {
     public State solve(State initial) {
         pastStates.add(initial.getUK());
         statePriorityQueue.addAll(getLeaves(initial));
+        long init  = Runtime.getRuntime().totalMemory()-Runtime.getRuntime().freeMemory();
         while (true) {
             State aux = statePriorityQueue.poll().getState();
             if (aux != null) {
                 String auxState = aux.getUK();
                 if (!pastStates.contains(auxState)) {
+                    explored++;
                     if (aux.isFinished(horizontalCount, verticalCount)) {
                         return aux;
                     } else {
                         pastStates.add(auxState);
                         statePriorityQueue.addAll(getLeaves(aux));
-                        if(getExploredStates()%10000==0) {  //print every X explored states
-                            System.out.println(statePriorityQueue.size());
-                            System.out.println(getExploredStates());
-                            System.out.println();
+                        if(getExploredStates()%2329891==0) { //print every X explored states
+                            System.out.println(Runtime.getRuntime().totalMemory()-Runtime.getRuntime().freeMemory() - init);
                         }
                     }
                 }
             }
         }
+    }
+
+    public Order getComparator() {
+        return comparator;
     }
 }

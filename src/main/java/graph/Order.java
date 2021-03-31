@@ -15,4 +15,5 @@ public interface Order extends Comparator<ProvState> {
      * @param v vertical numbers on the board.
      */
     void setCostAndHeuristic(State s, List<Integer> h, List<Integer> v);
+    String name();
 }
