@@ -3,6 +3,7 @@ package board;
 import graph.AStar;
 import graph.Graph;
 import graph.Greedy;
+import graph.Order;
 
 import java.util.*;
 
@@ -13,6 +14,7 @@ public class StateManager {
     private Thread solver;
     private State currentState;
     private State solution;
+    private Order algorithm;
 
     public Thread getSolver() {
         return solver;
@@ -26,7 +28,7 @@ public class StateManager {
         return currentState.getSquaresLeft(horizontalCount,verticalCount) == 0;
     }
 
-    public StateManager(int width, int height, List<Integer> horizontalCount, List<Integer> verticalCount) {
+    public StateManager(int width, int height, List<Integer> horizontalCount, List<Integer> verticalCount,Order algorithm) {
         StateManager.width = width;
         StateManager.height = height;
         StateManager.horizontalCount = horizontalCount;
@@ -34,6 +36,7 @@ public class StateManager {
         board = new int[width][height];
         solver=null;
         solution=null;
+        this.algorithm = algorithm;
     }
 
     public static State restartBoard() {
@@ -160,9 +163,12 @@ public class StateManager {
     public void solve(){
 
         solver = new Thread(() -> {
-            Graph graph = new Graph(new AStar(), horizontalCount, verticalCount);
+            Graph graph = new Graph(this.algorithm, horizontalCount, verticalCount);
             long startTime = System.currentTimeMillis();
-            solution = graph.solve(getCurrentState());
+            if(this.algorithm == null)
+                solution = graph.solveIterativeDeepening(getCurrentState());//TODO
+            else
+                solution = graph.solve(getCurrentState());
             System.out.println("AStar explored " + graph.getExploredStates() + " states and solution has depth of " + solution.getDepth() + ": " + (System.currentTimeMillis() - startTime));
             for (String s : solution.getState().split(";")) {
                 System.out.println(s);

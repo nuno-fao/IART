@@ -378,7 +378,7 @@ class AppTest {
     void TestDjikstra(){
         long startTime = System.currentTimeMillis();
         State initial = stateManager.readBoard(bs);
-        graph = new Graph(new Djikstra(),h,v);
+        graph = new Graph(new UniformCost(),h,v);
         solution = graph.solve(initial);
         if(testSol)
             assertEquals(solution.getState(),sol);

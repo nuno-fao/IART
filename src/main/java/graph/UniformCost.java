@@ -5,7 +5,7 @@ import board.State;
 
 import java.util.List;
 
-public class Djikstra implements Order {
+public class UniformCost implements Order {
     @Override
     public int compare(ProvState o1, ProvState o2) {
         return o1.getDepth() - o2.getDepth();
