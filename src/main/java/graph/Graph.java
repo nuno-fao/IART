@@ -9,7 +9,7 @@ import java.util.*;
 public class Graph {
     private final Set<String> pastStates;
     private final PriorityQueue<ProvState> statePriorityQueue;
-    private final Order comparator;
+    private Order comparator;
     private final List<Integer> horizontalCount;
     private final List<Integer> verticalCount;
 
@@ -55,7 +55,7 @@ public class Graph {
             pastStates.add(initial.getUK());
             statePriorityQueue.addAll(getLeaves(initial));
             while (true) {
-                State aux = statePriorityQueue.poll();
+                State aux = statePriorityQueue.poll().getState();
                 if (aux != null) {
                     String auxState = aux.getUK();
                     if (!pastStates.contains(auxState)) {
