@@ -16,4 +16,9 @@ public class Greedy implements Order {
     public void setCostAndHeuristic(State s, List<Integer> h, List<Integer> v) {
         s.updateDepth(h, v);
     }
+
+    @Override
+    public String name() {
+        return "Greedy";
+    }
 }

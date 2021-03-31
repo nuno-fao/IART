@@ -12,6 +12,7 @@ public class Graph {
     private Order comparator;
     private final List<Integer> horizontalCount;
     private final List<Integer> verticalCount;
+    private int explored = 0;
 
     public Graph(Order comparator, List<Integer> horizontalCount, List<Integer> verticalCount) {
         this.comparator = comparator;
@@ -29,15 +30,17 @@ public class Graph {
             for (int j = 0; j < state.getAquariums().get(i).getLevels().size(); j++) {
                 if (!state.getAquariums().get(i).getLevels().get(j).isPainted()) {
                     State aux = state.copy();
-                    if (!aux.paint(i, j))
+                    if (!aux.paint(i, j)) {
                         System.out.println("Level " + i + " does not exist on aquarium " + j + " or the aquarium itself.");
-
-                    comparator.setCostAndHeuristic(aux, horizontalCount, verticalCount);
-                    if (aux.getHeuristic() != -1 && !pastStates.contains(aux.getUK())) {
-                        List<int[]> l = new ArrayList<>(boardState);
-                        l.add(new int[]{i, j});
-                        out.add(new ProvState(l,aux.getDepth(),aux.getHeuristic()));
+                        continue;
                     }
+
+                        comparator.setCostAndHeuristic(aux, horizontalCount, verticalCount);
+                        if (aux.getHeuristic() != -1 && !pastStates.contains(aux.getState())) {
+                            List<int[]> l = new ArrayList<>(boardState);
+                            l.add(new int[]{i, j});
+                            out.add(new ProvState(l, aux.getDepth(), aux.getHeuristic()));
+                        }
                 }
             }
         }
@@ -45,7 +48,7 @@ public class Graph {
     }
 
     public int getExploredStates() {
-        return pastStates.size();
+        return explored;
     }
 
     public State solveIterativeDeepening(State initial) {
@@ -59,6 +62,7 @@ public class Graph {
                 if (aux != null) {
                     String auxState = aux.getUK();
                     if (!pastStates.contains(auxState)) {
+                        explored++;
                         if (aux.isFinished(horizontalCount, verticalCount)) {
                             return aux;
                         } else if(aux.getDepth()<max) {
@@ -78,30 +82,36 @@ public class Graph {
                 }
             }
         }
-
     }
 
     public State solve(State initial) {
         pastStates.add(initial.getUK());
         statePriorityQueue.addAll(getLeaves(initial));
+        long init  = Runtime.getRuntime().totalMemory()-Runtime.getRuntime().freeMemory();
         while (true) {
             State aux = statePriorityQueue.poll().getState();
             if (aux != null) {
                 String auxState = aux.getUK();
                 if (!pastStates.contains(auxState)) {
+                    explored++;
                     if (aux.isFinished(horizontalCount, verticalCount)) {
                         return aux;
                     } else {
                         pastStates.add(auxState);
                         statePriorityQueue.addAll(getLeaves(aux));
-                        if(getExploredStates()%10000==0) {
-                            System.out.println(statePriorityQueue.size());
+                        if(getExploredStates()%2329891==0) {
+                            System.out.println(Runtime.getRuntime().totalMemory()-Runtime.getRuntime().freeMemory() - init);
+                            /*System.out.println(statePriorityQueue.size());
                             System.out.println(getExploredStates());
-                            System.out.println();
+                            System.out.println();*/
                         }
                     }
                 }
             }
         }
+    }
+
+    public Order getComparator() {
+        return comparator;
     }
 }
