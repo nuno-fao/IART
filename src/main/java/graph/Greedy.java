@@ -5,6 +5,9 @@ import board.State;
 
 import java.util.List;
 
+/**
+ * Used to specify  heuristic to calculate and to sort according to Greedy algo
+ */
 public class Greedy implements Order {
     /**
      * Changes the name of this Student.

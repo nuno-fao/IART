@@ -15,6 +15,9 @@ import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Responsible for User input and UI
+ */
 public class View {
     /**
      * JPanel extender.
@@ -47,6 +50,9 @@ public class View {
     }
 }
 
+/**
+ * Responsible for Panel drawing
+ */
 class Rects extends JPanel {
     /**
      * State that will be painted.

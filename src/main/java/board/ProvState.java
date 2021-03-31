@@ -2,6 +2,10 @@ package board;
 
 import java.util.List;
 
+/**
+ * Pre state, it has enough info to create a full state but occupies less than a full state(used to reduce runtime memory usage)
+ * real states are created once the pre state is polled from the graph priority queue
+ */
 public class ProvState {
     List<int[]> painted;
     int depth;

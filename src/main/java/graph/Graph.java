@@ -6,6 +6,9 @@ import board.StateManager;
 
 import java.util.*;
 
+/**
+ * Class used to hold the tree/graph representation and explore states acoding to the order set by Order
+ */
 public class Graph {
     /**
      * Container for states that were already explored.

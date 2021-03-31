@@ -5,6 +5,9 @@ import board.State;
 
 import java.util.List;
 
+/**
+ * Used to specify the cost and heuristic to calculate and to sort according to AStar algo
+ */
 public class AStar implements Order {
     int i = 0;
 

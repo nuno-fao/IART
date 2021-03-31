@@ -2,6 +2,9 @@ package board;
 
 import java.util.List;
 
+/**
+ * Used to store custom problems
+ */
 public class PredefinedProblem {
     final List<Integer> h;
     final List<Integer> v;

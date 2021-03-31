@@ -6,6 +6,9 @@ import board.State;
 import java.util.Comparator;
 import java.util.List;
 
+/**
+ * Interface for the multiple comparators used to sort the graph priority queue
+ */
 public interface Order extends Comparator<ProvState> {
     /**
      * Updates the heuristic and cost of a given state.

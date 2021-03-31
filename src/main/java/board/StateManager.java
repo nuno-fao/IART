@@ -7,6 +7,9 @@ import graph.Order;
 
 import java.util.*;
 
+/**
+ * Class that handles the states and holds the current state and common information for all the states
+ */
 public class StateManager {
     /**
      * Board's width and height.
@@ -232,7 +235,7 @@ public class StateManager {
         solver = new Thread(() -> {
             Graph graph = new Graph(this.algorithm, horizontalCount, verticalCount);
             long startTime = System.currentTimeMillis();
-            if(this.algorithm == null)//if no algorythm was specified in the constructor it means iterative deepening should be used
+            if (this.algorithm == null){//if no algorythm was specified in the constructor it means iterative deepening should be used
                 solution = graph.solveIterativeDeepening(getCurrentState());//TODO
                 System.out.println("Iterative Deepening explored " + graph.getExploredStates() + " states and solution has depth of " + solution.getDepth() + ": " + (System.currentTimeMillis() - startTime));
             }

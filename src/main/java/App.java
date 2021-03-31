@@ -16,6 +16,9 @@ import java.util.List;
 import java.util.Scanner;
 import static java.lang.Integer.valueOf;
 
+/**
+ * Game entry point
+ */
 public class App {
     private final List<PredefinedProblem> problems;
     private StateManager stateManager;

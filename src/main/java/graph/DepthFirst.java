@@ -5,6 +5,9 @@ import board.State;
 
 import java.util.List;
 
+/**
+ * Used to specify the cost to calculate and to sort according to AStar algo
+ */
 public class DepthFirst implements Order {
     /**
      * Changes the name of this Student.

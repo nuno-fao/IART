@@ -5,6 +5,9 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
+/**
+ * Representation of a game state
+ */
 public class State implements Serializable {
 
     /**

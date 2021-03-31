@@ -2,6 +2,9 @@ package board;
 
 import java.io.Serializable;
 
+/**
+ * Representation of a square, it belongs to a aquarium and must be painted or not painted
+ */
 public class Square implements Serializable {
     final int y;
 

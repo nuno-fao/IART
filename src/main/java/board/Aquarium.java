@@ -4,6 +4,9 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Holder for the multiple levels
+ */
 public class Aquarium implements Serializable {
     private final List<Level> levels;
     private final List<Square> squares;

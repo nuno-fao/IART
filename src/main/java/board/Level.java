@@ -4,6 +4,9 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Class that represents a line of a aquarium
+ */
 public class Level implements Serializable {
     private final List<Square> squares = new ArrayList<>();
     private boolean painted = false;
