@@ -12,6 +12,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.geom.Rectangle2D;
+import java.util.ArrayList;
 import java.util.List;
 
 public class View {
@@ -25,7 +26,7 @@ public class View {
         mainFrame = new JFrame("Aquarium");
         mainFrame.setSize(width + 200, height + 5);
         Dimension d = new Dimension();
-        d.setSize(width + 200, height + 5);
+        d.setSize(width + 200, height + 100);
         mainFrame.getContentPane().setPreferredSize(d);
         mainFrame.pack();
         mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -47,6 +48,7 @@ class Rects extends JPanel {
     int h;
     Color color;
     final List<PredefinedProblem> problems;
+    Boolean solved = false;
 
 
     public Rects(StateManager stateManager, State currentState, int w, int h, Color color, List<PredefinedProblem> problems) {
@@ -64,7 +66,6 @@ class Rects extends JPanel {
         this.addMouseListener(new MouseClick());
 
         drawButtons();
-
         setLayout(null);
     }
 
@@ -95,6 +96,14 @@ class Rects extends JPanel {
         add(reset);
 
         drawHelpers();
+    }
+
+    private void drawWinnerMessage() {
+        JLabel jLabel = new JLabel("<html><font color='orange' size='4'>Congratulations you have completed the puzzle!!!</font></html>");
+        jLabel.setBounds(w/2-200 , h, 450, 25);
+        if (stateManager.reachedToTheSolution() && !solved)
+            add(jLabel);
+        solved = true;
     }
 
     private void drawHelpers(){
@@ -131,6 +140,12 @@ class Rects extends JPanel {
         thread.start();
     }
 
+    @Override
+    public void revalidate(){
+        super.revalidate();
+        solved = false;
+    }
+
 
     @Override
     public void paintComponent(Graphics g) {
@@ -147,16 +162,34 @@ class Rects extends JPanel {
         paintBorders(g, amountW, amountH, borderColor);
 
         paintNumbers(g, amountW, amountH);
-
+        drawWinnerMessage();
     }
 
     private void paintNumbers(Graphics g, int w, int h) {
         g.setFont(new Font("default", Font.BOLD, 16));
-        //System.out.println(board.getHorizontalCount());
+        List<Integer> horizontal = new ArrayList<>();
+        List<Integer> vertical = new ArrayList<>();
+
+        stateManager.getLeftSquares(horizontal,vertical);
+
+
         for (int i = 0; i < stateManager.getHorizontalCount().size(); i++) {
+            if(horizontal.get(i) < 0)
+                g.setColor(Color.RED);
+            else if(horizontal.get(i) == 0)
+                g.setColor(Color.blue);
+            else
+                g.setColor(Color.BLACK);
+
             g.drawString(stateManager.getHorizontalCount().get(i).toString(), i * (w + 6) + 30, 18);
         }
         for (int i = 0; i < stateManager.getVerticalCount().size(); i++) {
+            if(vertical.get(i) < 0)
+                g.setColor(Color.RED);
+            else if(vertical.get(i) == 0)
+                g.setColor(Color.blue);
+            else
+                g.setColor(Color.BLACK);
             g.drawString(stateManager.getVerticalCount().get(i).toString(), 10, i * (h + 6) + 40);
         }
     }
@@ -171,8 +204,12 @@ class Rects extends JPanel {
                 int l_y = (int) (h * y * 1.1 + 5);
                 if (!s.isPainted())
                     drawRectangle(g, color, l_x - 2.5, l_y - 2.5, w + 5, h + 5);
-                else
-                    drawRectangle(g, Color.cyan, l_x - 2.5, l_y - 2.5, w + 5, h + 5);
+                else {
+                    if(stateManager.reachedToTheSolution())
+                        drawRectangle(g, Color.orange, l_x - 2.5, l_y - 2.5, w + 5, h + 5);
+                    else
+                        drawRectangle(g, Color.cyan, l_x - 2.5, l_y - 2.5, w + 5, h + 5);
+                }
                 x++;
             }
             y++;
@@ -235,7 +272,7 @@ class Rects extends JPanel {
             int x = e.getX();
             int y = e.getY();
 
-            if (x <= w && y <= h) {
+            if ((x <= w && y <= h) && (!stateManager.reachedToTheSolution())) {
                 stateManager.actOnClick(x, y);
                 revalidate();
                 repaint();
@@ -247,6 +284,8 @@ class Rects extends JPanel {
     private class Resetter implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {
+            removeAll();
+            drawButtons();
             stateManager.reset();
             revalidate();
             repaint();
@@ -278,7 +317,6 @@ class Rects extends JPanel {
             getRootPane().getContentPane().setPreferredSize(d);
 
             currentState=stateManager.getCurrentState();
-
             revalidate();
             repaint();
 

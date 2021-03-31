@@ -50,11 +50,7 @@ public class App {
         List<Integer> h =  a.problems.get(startingProblem).getH();
         List<Integer> v =  a.problems.get(startingProblem).getV();
 
-
-
         a.stateManager = new StateManager(h.size(),v.size(), h , v);
-
-
 
         State initial = a.stateManager.readBoard(bs);
 
