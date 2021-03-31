@@ -12,6 +12,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.geom.Rectangle2D;
+import java.util.ArrayList;
 import java.util.List;
 
 public class View {
@@ -159,10 +160,29 @@ class Rects extends JPanel {
     private void paintNumbers(Graphics g, int w, int h) {
         g.setFont(new Font("default", Font.BOLD, 16));
         //System.out.println(board.getHorizontalCount());
+        List<Integer> horizontal = new ArrayList<>();
+        List<Integer> vertical = new ArrayList<>();
+
+        stateManager.getLeftSquares(horizontal,vertical);
+
+
         for (int i = 0; i < stateManager.getHorizontalCount().size(); i++) {
+            if(horizontal.get(i) < 0)
+                g.setColor(Color.RED);
+            else if(horizontal.get(i) == 0)
+                g.setColor(Color.blue);
+            else
+                g.setColor(Color.BLACK);
+
             g.drawString(stateManager.getHorizontalCount().get(i).toString(), i * (w + 6) + 30, 18);
         }
         for (int i = 0; i < stateManager.getVerticalCount().size(); i++) {
+            if(vertical.get(i) < 0)
+                g.setColor(Color.RED);
+            else if(vertical.get(i) == 0)
+                g.setColor(Color.blue);
+            else
+                g.setColor(Color.BLACK);
             g.drawString(stateManager.getVerticalCount().get(i).toString(), 10, i * (h + 6) + 40);
         }
     }
