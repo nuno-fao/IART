@@ -8,9 +8,11 @@ public class PredefinedProblem {
     final String boardString;
 
     public PredefinedProblem(List<Integer> h, List<Integer> v, String boardString) {
+        System.out.println("olha um problema");
         this.h = h;
         this.v = v;
         this.boardString = boardString;
+        System.out.println("feito um problema");
     }
 
     public List<Integer> getH() {
