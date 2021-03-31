@@ -7,7 +7,7 @@ import java.util.*;
 public class Graph {
     private final Set<String> pastStates;
     private final PriorityQueue<State> statePriorityQueue;
-    private final Order comparator;
+    private Order comparator;
     private final List<Integer> horizontalCount;
     private final List<Integer> verticalCount;
 
@@ -43,8 +43,40 @@ public class Graph {
         return pastStates.size();
     }
 
-    public State solve(State initial) {
+    public State solveIterativeDeepening(State initial) {
+        comparator = new DepthFirst();
         int max = 0;
+        while(true){
+            pastStates.add(initial.getUK());
+            statePriorityQueue.addAll(getLeaves(initial));
+            while (true) {
+                State aux = statePriorityQueue.poll();
+                if (aux != null) {
+                    String auxState = aux.getUK();
+                    if (!pastStates.contains(auxState)) {
+                        if (aux.isFinished(horizontalCount, verticalCount)) {
+                            return aux;
+                        } else if(aux.getDepth()<max) {
+                            pastStates.add(auxState);
+                            statePriorityQueue.addAll(getLeaves(aux));
+                        /*System.out.println(getExploredStates());
+                        System.out.println(statePriorityQueue.size());
+                        System.out.println();*/
+                        }
+                    }
+                }
+                else{
+                    max++;
+                    pastStates.clear();
+                    statePriorityQueue.clear();
+                    break;
+                }
+            }
+        }
+
+    }
+
+    public State solve(State initial) {
         pastStates.add(initial.getUK());
         statePriorityQueue.addAll(getLeaves(initial));
         while (true) {
