@@ -7,10 +7,29 @@ import board.StateManager;
 import java.util.*;
 
 public class Graph {
+    /**
+     * Container for states that were already explored.
+     */
     private final Set<String> pastStates;
+
+    /**
+     * Container with priority for states not yet explored.
+     */
     private final PriorityQueue<ProvState> statePriorityQueue;
+
+    /**
+     * Search method for solving the problem. Used for ordering the argument statePriorityQueue.
+     */
     private Order comparator;
+
+    /**
+     * Horizontal numbers on the board.
+     */
     private final List<Integer> horizontalCount;
+
+    /**
+     * Vertical numbers on the board.
+     */
     private final List<Integer> verticalCount;
     private int explored = 0;
 
@@ -22,6 +41,11 @@ public class Graph {
         this.verticalCount = verticalCount;
     }
 
+    /**
+     * Creates a list of new VALID states by applying all possible moves to the argument state
+     * @param state state from which to obtain the new states.
+     * @return list of new VALID states
+     */
     private List<ProvState> getLeaves(State state) {
         List<ProvState> out = new ArrayList<>();
         List<int[]> boardState = state.getState2();
@@ -47,10 +71,18 @@ public class Graph {
         return out;
     }
 
+    /**
+     * Returns the size of container of already explored states
+     */
     public int getExploredStates() {
         return explored;
     }
 
+    /**
+     * Solves the problem used the search method Iterative Deepening
+     * @param initial initial state.
+     * @return state corresponding to the final solution
+     */
     public State solveIterativeDeepening(State initial) {
         comparator = new DepthFirst();
         int max = 0;
@@ -59,13 +91,13 @@ public class Graph {
             statePriorityQueue.addAll(getLeaves(initial));
             while (true) {
                 State aux = statePriorityQueue.poll().getState();
-                if (aux != null) {
+                if (aux != null) {  //check if there are any states on the queue
                     String auxState = aux.getUK();
                     if (!pastStates.contains(auxState)) {
                         explored++;
-                        if (aux.isFinished(horizontalCount, verticalCount)) {
+                        if (aux.isFinished(horizontalCount, verticalCount)) {   //solution found
                             return aux;
-                        } else if(aux.getDepth()<max) {
+                        } else if(aux.getDepth()<max) { //only add new leaves to the queue if it is not on the max depth
                             pastStates.add(auxState);
                             statePriorityQueue.addAll(getLeaves(aux));
                         /*System.out.println(getExploredStates());
@@ -74,7 +106,7 @@ public class Graph {
                         }
                     }
                 }
-                else{
+                else{ //if there aren't states on the queue, increase max depth, reset containers and start over
                     max++;
                     pastStates.clear();
                     statePriorityQueue.clear();
@@ -84,6 +116,11 @@ public class Graph {
         }
     }
 
+    /**
+     * Solves the problem used the search method specified comparator
+     * @param initial initial state.
+     * @return state corresponding to the final solution
+     */
     public State solve(State initial) {
         pastStates.add(initial.getUK());
         statePriorityQueue.addAll(getLeaves(initial));
@@ -99,11 +136,8 @@ public class Graph {
                     } else {
                         pastStates.add(auxState);
                         statePriorityQueue.addAll(getLeaves(aux));
-                        if(getExploredStates()%2329891==0) {
+                        if(getExploredStates()%2329891==0) { //print every X explored states
                             System.out.println(Runtime.getRuntime().totalMemory()-Runtime.getRuntime().freeMemory() - init);
-                            /*System.out.println(statePriorityQueue.size());
-                            System.out.println(getExploredStates());
-                            System.out.println();*/
                         }
                     }
                 }

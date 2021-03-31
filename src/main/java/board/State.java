@@ -7,11 +7,34 @@ import java.util.List;
 
 public class State implements Serializable {
 
+    /**
+     * Sqaure matrix.
+     */
     private final List<List<Square>> matrix;
+
+    /**
+     * Lists of aquariums.
+     */
     private final List<Aquarium> aquariums;
+
+    /**
+     * Depth of the state.
+     */
     private int depth;
+
+    /**
+     * Heuristic of the state.
+     */
     private int heuristic;
+
+    /**
+     * State unique identifier.
+     */
     private String uk = null;
+
+    /**
+     * Number of squares left to paint till the solution is reached.
+     */
     private Integer squaresLeft = null;
 
     public State(List<List<Square>> matrix, List<Aquarium> aquariums, int depth) {
@@ -63,6 +86,12 @@ public class State implements Serializable {
         return true;
     }
 
+    /**
+     * Paints a certain aquarium up to a certain level.
+     * @param aquarium aquarium to paint.
+     * @param level level to paint up to.
+     * @return true if it is a valid move, false otherwise.
+     */
     public boolean paint(int aquarium, int level) {
         try {
             aquariums.get(aquarium).getLevels().get(level).paint();
@@ -72,8 +101,9 @@ public class State implements Serializable {
         }
     }
 
-
-    //Builds and returns board string from the current state
+    /**
+     * Builds and returns board string from the current state.
+     */
     public String getState() {
         StringBuilder out = new StringBuilder();
         for (List<Square> squares : matrix) {
@@ -93,6 +123,9 @@ public class State implements Serializable {
         return out.toString();
     }
 
+    /**
+     * Builds and returns state identifier.
+     */
     public String getUK() {
         if (uk == null) {
             StringBuilder out = new StringBuilder();
@@ -110,13 +143,22 @@ public class State implements Serializable {
         return uk;
     }
 
+    /**
+     * Verifies is the current state a solution to the problem.
+     * @param horizontalCount horizontal numbers.
+     * @param verticalCount vertical numbers.
+     * @return true if it is a solution, false otherwise.
+     */
     public boolean isFinished(List<Integer> horizontalCount, List<Integer> verticalCount) {
         if (squaresLeft == null)
             squaresLeft = getSquaresLeft(horizontalCount, verticalCount);
         return squaresLeft == 0;
     }
 
-    //used for checking heuristic and game end. Returns -1 - not respecting restrictions; 0 - finished; anything else - the number of squares left
+
+    /**
+     * Used for checking heuristic and game end.
+     */
     public int getSquaresLeft(List<Integer> horizontalCount, List<Integer> verticalCount) {
         int out = 0, aux;
         for (int i = 0; i < verticalCount.size(); i++) {
@@ -139,7 +181,9 @@ public class State implements Serializable {
 
     }
 
-    //used for checking heuristic and game end
+    /**
+     * Used for checking heuristic and game end.
+     */
     private int checkHorizontalLine(Integer number, List<Square> line) {
         Integer i = 0;
         for (Square square : line) {
@@ -154,7 +198,9 @@ public class State implements Serializable {
         }
     }
 
-    //used for checking heuristic and game end
+    /**
+     * Used for checking heuristic and game end.
+     */
     private int checkVerticalLine(Integer number, List<List<Square>> columns, int col) {
         Integer i = 0;
         for (List<Square> list : columns) {
@@ -172,6 +218,12 @@ public class State implements Serializable {
 
 
     //returns heuristic for the current state. If -1 - invalid, if 0 - finished, anything else - the actual heuristic
+    /**
+     * Used for checking heuristic
+     * @param horizontalCount horizontal numbers.
+     * @param verticalCount vertical numbers.
+     * @return  -1 if invalid, 0 if solution, anything else is the actual heuristic.
+     */
     public int updateHeuristic(List<Integer> horizontalCount, List<Integer> verticalCount) {
         squaresLeft = getSquaresLeft(horizontalCount, verticalCount);
         int out = 0, nLeft = squaresLeft;
@@ -200,7 +252,9 @@ public class State implements Serializable {
         return out;
     }
 
-    //deep copies the state
+    /**
+     * Deep copies the state.
+     */
     public State copy() {
         State out = StateManager.restartBoard();
         out.setSol2(aquariums);
@@ -208,6 +262,9 @@ public class State implements Serializable {
         return out;
     }
 
+    /**
+     * Used for setting the solution.
+     */
     public void setSol2(List<Aquarium> aquariums) {
         for (int a = 0; a < aquariums.size(); a++) {
             List<Level> local_level = this.aquariums.get(a).getLevels();
@@ -222,6 +279,9 @@ public class State implements Serializable {
         }
     }
 
+    /**
+     * Used for setting the solution.
+     */
     public void setSol(List<int[]> aqs){
         for(int a[]:aqs){
             this.aquariums.get(a[0]).getLevels().get(a[1]).paint();
@@ -248,7 +308,7 @@ public class State implements Serializable {
         this.depth = depth;
     }
 
-    //increases depth and sets heuristic
+
     public void updateCostAndHeuristic(List<Integer> horizontalCount, List<Integer> verticalCount) {
         this.depth++;
         this.heuristic = updateHeuristic(horizontalCount, verticalCount);
@@ -261,6 +321,9 @@ public class State implements Serializable {
         this.heuristic = squaresLeft;
     }
 
+    /**
+     * Unpaint everything.
+     */
     public void reset(){
         for(Aquarium aquarium:aquariums){
             aquarium.unpaintDownTo(0);

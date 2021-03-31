@@ -44,6 +44,9 @@ public class Aquarium implements Serializable {
         return levels;
     }
 
+    /**
+     * Get number of unpainted squares in the aquarium.
+     */
     public int getNotPainted() {
         int aux = 0;
         for (Level level : levels) {
@@ -54,6 +57,11 @@ public class Aquarium implements Serializable {
         return aux;
     }
 
+    /**
+     * Receives a square that was clicked on and paints the aquarium up to the square level.
+     * If it is already painted, unpaints the aquarium down to the square level.
+     * Also updates depth..
+     */
     public void squareIsClicked(Square square) {
         for (int i = 0; i < levels.size(); i++) {
             Level level = levels.get(i);
@@ -68,6 +76,9 @@ public class Aquarium implements Serializable {
 
     }
 
+    /**
+     * Unpaints every level on the aquarium above the specified one.
+     */
     public void unpaintDownTo(int level) {
         for (int i = level; i < levels.size(); i++) {
             levels.get(i).unpaint();

@@ -23,6 +23,9 @@ public class Level implements Serializable {
         return out;
     }
 
+    /**
+     * Paints every square on the level and the ones below.
+     */
     public void paint() {
         painted = true;
         for (Square s : squares) {
@@ -32,6 +35,9 @@ public class Level implements Serializable {
             nextLevel.paint();
     }
 
+    /**
+     * Unpaints every square on the level.
+     */
     public void unpaint() {
         painted = false;
         for (Square s : squares) {
