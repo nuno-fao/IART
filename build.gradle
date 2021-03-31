@@ -25,7 +25,38 @@ application {
     mainClass = 'App'
 }
 
+task astar(type: JavaExec) {
+    classpath sourceSets.main.runtimeClasspath
+    main = "App"
+    args "astar"
+}
 
+task breathfirst(type: JavaExec) {
+    classpath sourceSets.main.runtimeClasspath
+    main = "App"
+    args "breathfirst"
+}
 
+task depthfirst(type: JavaExec) {
+    classpath sourceSets.main.runtimeClasspath
+    main = "App"
+    args "depthfirst"
+}
 
+task greedy(type: JavaExec) {
+    classpath sourceSets.main.runtimeClasspath
+    main = "App"
+    args "greedy"
+}
 
+task uniform(type: JavaExec) {
+    classpath sourceSets.main.runtimeClasspath
+    main = "App"
+    args "uniform"
+}
+
+task iterative(type: JavaExec) {
+    classpath sourceSets.main.runtimeClasspath
+    main = "App"
+    args "iterative"
+}

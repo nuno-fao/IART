@@ -7,6 +7,7 @@ import graph.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Scanner;
 
 public class App {
     private final List<PredefinedProblem> problems = new ArrayList<>();
@@ -43,18 +44,44 @@ public class App {
     public static void main(String[] args) {
         App a = new App();
         String bs;
-
         int startingProblem=0;
 
         bs = a.problems.get(startingProblem).getBoardString();
         List<Integer> h =  a.problems.get(startingProblem).getH();
         List<Integer> v =  a.problems.get(startingProblem).getV();
 
-
-
-        a.stateManager = new StateManager(h.size(),v.size(), h , v);
-
-
+        if(args.length != 0){
+            switch (args[0]){
+                case "astar":{
+                    a.stateManager = new StateManager(h.size(),v.size(), h , v,new AStar());
+                    break;
+                }
+                case "breathfirst":{
+                    a.stateManager = new StateManager(h.size(),v.size(), h , v,new BreathFirst());
+                    break;
+                }
+                case "depthfirst":{
+                    a.stateManager = new StateManager(h.size(),v.size(), h , v,new DepthFirst());
+                    break;
+                }
+                case "greedy":{
+                    a.stateManager = new StateManager(h.size(),v.size(), h , v,new Greedy());
+                    break;
+                }
+                case "uniform":{
+                    a.stateManager = new StateManager(h.size(),v.size(), h , v,new UniformCost());
+                    break;
+                }
+                case "iterative":{
+                    a.stateManager = new StateManager(h.size(),v.size(), h , v,null);
+                    break;
+                }
+                default:
+                    a.stateManager = new StateManager(h.size(),v.size(), h , v,new Greedy());
+            }
+        }else{
+            a.stateManager = new StateManager(h.size(),v.size(), h , v,new Greedy());
+        }
 
         State initial = a.stateManager.readBoard(bs);
 
