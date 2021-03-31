@@ -1,5 +1,6 @@
 package board;
 
+import graph.AStar;
 import graph.Graph;
 import graph.Greedy;
 import graph.Order;
@@ -165,7 +166,7 @@ public class StateManager {
             Graph graph = new Graph(this.algorithm, horizontalCount, verticalCount);
             long startTime = System.currentTimeMillis();
             if(this.algorithm == null)
-                solution = graph.solve(getCurrentState());//TODO
+                solution = graph.solveIterativeDeepening(getCurrentState());//TODO
             else
                 solution = graph.solve(getCurrentState());
             System.out.println("AStar explored " + graph.getExploredStates() + " states and solution has depth of " + solution.getDepth() + ": " + (System.currentTimeMillis() - startTime));

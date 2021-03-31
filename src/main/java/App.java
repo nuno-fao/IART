@@ -50,6 +50,7 @@ public class App {
         List<Integer> h =  a.problems.get(startingProblem).getH();
         List<Integer> v =  a.problems.get(startingProblem).getV();
 
+
         if(args.length != 0){
             switch (args[0]){
                 case "astar":{
