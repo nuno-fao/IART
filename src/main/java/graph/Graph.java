@@ -1,12 +1,14 @@
 package graph;
 
+import board.ProvState;
 import board.State;
+import board.StateManager;
 
 import java.util.*;
 
 public class Graph {
     private final Set<String> pastStates;
-    private final PriorityQueue<State> statePriorityQueue;
+    private final PriorityQueue<ProvState> statePriorityQueue;
     private Order comparator;
     private final List<Integer> horizontalCount;
     private final List<Integer> verticalCount;
@@ -14,13 +16,14 @@ public class Graph {
     public Graph(Order comparator, List<Integer> horizontalCount, List<Integer> verticalCount) {
         this.comparator = comparator;
         this.pastStates = new HashSet<>();
-        this.statePriorityQueue = new PriorityQueue<>(comparator);
+        this.statePriorityQueue = new PriorityQueue<ProvState>(comparator);
         this.horizontalCount = horizontalCount;
         this.verticalCount = verticalCount;
     }
 
-    private List<State> getLeaves(State state) {
-        List<State> out = new ArrayList<>();
+    private List<ProvState> getLeaves(State state) {
+        List<ProvState> out = new ArrayList<>();
+        List<int[]> boardState = state.getState2();
 
         for (int i = 0; i < state.getAquariums().size(); i++) {
             for (int j = 0; j < state.getAquariums().get(i).getLevels().size(); j++) {
@@ -31,7 +34,9 @@ public class Graph {
 
                     comparator.setCostAndHeuristic(aux, horizontalCount, verticalCount);
                     if (aux.getHeuristic() != -1 && !pastStates.contains(aux.getUK())) {
-                        out.add(aux);
+                        List<int[]> l = new ArrayList<>(boardState);
+                        l.add(new int[]{i, j});
+                        out.add(new ProvState(l,aux.getDepth(),aux.getHeuristic()));
                     }
                 }
             }
@@ -50,7 +55,7 @@ public class Graph {
             pastStates.add(initial.getUK());
             statePriorityQueue.addAll(getLeaves(initial));
             while (true) {
-                State aux = statePriorityQueue.poll();
+                State aux = statePriorityQueue.poll().getState();
                 if (aux != null) {
                     String auxState = aux.getUK();
                     if (!pastStates.contains(auxState)) {
@@ -80,7 +85,7 @@ public class Graph {
         pastStates.add(initial.getUK());
         statePriorityQueue.addAll(getLeaves(initial));
         while (true) {
-            State aux = statePriorityQueue.poll();
+            State aux = statePriorityQueue.poll().getState();
             if (aux != null) {
                 String auxState = aux.getUK();
                 if (!pastStates.contains(auxState)) {
@@ -89,9 +94,11 @@ public class Graph {
                     } else {
                         pastStates.add(auxState);
                         statePriorityQueue.addAll(getLeaves(aux));
-                        /*System.out.println(getExploredStates());
-                        System.out.println(statePriorityQueue.size());
-                        System.out.println();*/
+                        if(getExploredStates()%10000==0) {
+                            System.out.println(statePriorityQueue.size());
+                            System.out.println(getExploredStates());
+                            System.out.println();
+                        }
                     }
                 }
             }

@@ -144,7 +144,7 @@ public class StateManager {
     }
 
     public void giveSolution(){
-        currentState.setSol2(solution.getState2(),solution.getAquariums());
+        currentState.setSol2(solution.getAquariums());
     }
 
     public void changeLevel(String board,List<Integer> hc,List<Integer> vc){
