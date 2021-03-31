@@ -1,12 +1,13 @@
 package graph;
 
+import board.ProvState;
 import board.State;
 
 import java.util.List;
 
 public class DepthFirst implements Order {
     @Override
-    public int compare(State o1, State o2) {
+    public int compare(ProvState o1, ProvState o2) {
         return o2.getDepth() - o1.getDepth();
     }
 
