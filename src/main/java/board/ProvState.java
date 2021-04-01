@@ -16,6 +16,7 @@ public class ProvState {
         heuristic = h;
         depth = d;
     }
+
     public State getState(){
         State temp =  StateManager.restartBoard();
         temp.setSol(painted);

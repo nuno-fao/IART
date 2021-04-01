@@ -13,6 +13,7 @@ import static java.lang.Thread.sleep;
  * Class that handles the states and holds the current state and common information for all the states
  */
 public class StateManager {
+    public static boolean mustCompact = true;
     /**
      * Board's width and height.
      */

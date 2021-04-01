@@ -451,12 +451,13 @@ class Rects extends JPanel {
         public void actionPerformed(ActionEvent e) {
                 //currentState.setSol2(solution.getAquariums());
                 List<int[]> list = stateManager.getSolution().getPainted();
-                list.sort(new Order());
+                if(StateManager.mustCompact)
+                    list.sort(new Order());
                 int size = list.size();
                 solver = new Thread(() -> {
                     int last = -1;
                     for (int step[] :list ) {
-                        if(last == step[0]){
+                        if(last == step[0] && StateManager.mustCompact){
                             continue;
                         }
                         currentState.paint(step[0], step[1]);

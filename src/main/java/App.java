@@ -73,6 +73,11 @@ public class App {
         State initial = a.stateManager.readBoard(bs);   //creates the initial state from the board string
 
         a.view = new View(67 * h.size(), 67 * v.size(), a.stateManager, initial, a.problems);   //starts the view
+        if(args.length > 1){
+            if(args[1].compareTo("-n") ==0 ){
+                StateManager.mustCompact = false;
+            }
+        }
     }
 
 
@@ -84,7 +89,10 @@ public class App {
      */
     public static void readProblems(List<PredefinedProblem> problems){
         try{
-            File inputFile = new File("src/main/java/problems");
+            File inputFile;
+                inputFile = new File("src/main/java/problems");
+                if(!inputFile.canRead())
+                    inputFile = new File("problems");
             DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
             DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
             Document doc = dBuilder.parse(inputFile);
