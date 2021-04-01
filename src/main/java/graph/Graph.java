@@ -106,7 +106,7 @@ public class Graph {
                         } else if(aux.getDepth()<max) { //only add new leaves to the queue if it is not on the max depth
                             pastStates.add(auxState);
                             statePriorityQueue.addAll(getLeaves(aux));
-                            if(getExploredStates()%4000==0) { //print every X explored states
+                            if(getExploredStates()%(4000*50)==0) { //print every X explored states
                                 System.out.println(Runtime.getRuntime().totalMemory()-Runtime.getRuntime().freeMemory());
                             }
                         }
