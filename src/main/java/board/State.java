@@ -47,6 +47,16 @@ public class State implements Serializable {
         this.heuristic = 999;//default value until it is updated;
     }
 
+    private List<int[]> painted = new ArrayList<>();
+
+    public List<int[]> getPainted() {
+        return painted;
+    }
+
+    public void setPainted(List<int[]> painted) {
+        this.painted = painted;
+    }
+
     public int size() {
         int out = 0;
         out += matrix.size() * matrix.get(0).size() * 8;
@@ -98,6 +108,7 @@ public class State implements Serializable {
     public boolean paint(int aquarium, int level) {
         try {
             aquariums.get(aquarium).getLevels().get(level).paint();
+            painted.add(new int[]{aquarium, level});
             return true;
         } catch (IndexOutOfBoundsException e) {
             return false;

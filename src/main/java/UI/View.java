@@ -15,6 +15,8 @@ import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
 import java.util.List;
 
+import static java.lang.Thread.sleep;
+
 /**
  * Responsible for User input and UI
  */
@@ -54,6 +56,7 @@ public class View {
  * Responsible for Panel drawing
  */
 class Rects extends JPanel {
+    public Thread solver = new Thread();
     /**
      * State that will be painted.
      */
@@ -380,6 +383,7 @@ class Rects extends JPanel {
          */
         @Override
         public void actionPerformed(ActionEvent e) {
+            solver.stop();
             removeAll();
             drawButtons();
             stateManager.reset();
@@ -403,6 +407,7 @@ class Rects extends JPanel {
          */
         @Override
         public void actionPerformed(ActionEvent e) {
+            solver.stop();
             w=problems.get(level).getH().size()*67 + 10;
             h=problems.get(level).getV().size()*67 + 10;
 
@@ -443,14 +448,24 @@ class Rects extends JPanel {
     class Solver implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {
-            stateManager.giveSolution();
-            revalidate();
-            repaint();
+                //currentState.setSol2(solution.getAquariums());
+                List<int[]> list = stateManager.getSolution().getPainted();
+                int size = list.size();
+                solver = new Thread(() -> {
+                    for (int step[] :list ) {
+                        currentState.paint(step[0], step[1]);
+                        try {
+                            revalidate();
+                            repaint();
+                            sleep(3000/size);
+                        } catch (Exception interruptedException) {
+                            interruptedException.printStackTrace();
+                        }
+                    }
+                }
+                );
+                solver.start();
         }
     }
-
-
-
-
 }
 

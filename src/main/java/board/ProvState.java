@@ -20,6 +20,7 @@ public class ProvState {
         State temp =  StateManager.restartBoard();
         temp.setSol(painted);
         temp.setDepth(depth);
+        temp.setPainted(painted);
         return temp;
     }
 

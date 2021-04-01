@@ -51,7 +51,7 @@ public class Graph {
      */
     private List<ProvState> getLeaves(State state) {
         List<ProvState> out = new ArrayList<>();
-        List<int[]> boardState = state.getState2();
+        List<int[]> boardState = state.getPainted();
 
         for (int i = 0; i < state.getAquariums().size(); i++) {
             for (int j = 0; j < state.getAquariums().get(i).getLevels().size(); j++) {
@@ -90,7 +90,6 @@ public class Graph {
         this.comparator = new DepthFirst();
         statePriorityQueue = new PriorityQueue<>(this.comparator);
         int max = 0;
-        long init  = Runtime.getRuntime().totalMemory()-Runtime.getRuntime().freeMemory();
         while(true){
             pastStates.add(initial.getUK());
             statePriorityQueue.addAll(getLeaves(initial));
@@ -108,7 +107,7 @@ public class Graph {
                             pastStates.add(auxState);
                             statePriorityQueue.addAll(getLeaves(aux));
                             if(getExploredStates()%4000==0) { //print every X explored states
-                                System.out.println(Runtime.getRuntime().totalMemory()-Runtime.getRuntime().freeMemory() - init);
+                                System.out.println(Runtime.getRuntime().totalMemory()-Runtime.getRuntime().freeMemory());
                             }
                         }
                     }
@@ -131,7 +130,6 @@ public class Graph {
     public State solve(State initial) {
         pastStates.add(initial.getUK());
         statePriorityQueue.addAll(getLeaves(initial));
-        long init  = Runtime.getRuntime().totalMemory()-Runtime.getRuntime().freeMemory();
         while (true) {
             State aux = statePriorityQueue.poll().getState();
             if (aux != null) {
@@ -144,7 +142,7 @@ public class Graph {
                         pastStates.add(auxState);
                         statePriorityQueue.addAll(getLeaves(aux));
                         if(getExploredStates()%4000==0) { //print every X explored states
-                            System.out.println(Runtime.getRuntime().totalMemory()-Runtime.getRuntime().freeMemory() - init);
+                            System.out.println(Runtime.getRuntime().totalMemory()-Runtime.getRuntime().freeMemory());
                         }
                     }
                 }

@@ -7,6 +7,8 @@ import graph.Order;
 
 import java.util.*;
 
+import static java.lang.Thread.sleep;
+
 /**
  * Class that handles the states and holds the current state and common information for all the states
  */
@@ -201,12 +203,6 @@ public class StateManager {
         currentState.reset();
     }
 
-    /**
-     * Copies the solution reched by the solver thread to the current state.
-     */
-    public void giveSolution(){
-        currentState.setSol2(solution.getAquariums());
-    }
 
     /**
      * Changes the problem shown.
