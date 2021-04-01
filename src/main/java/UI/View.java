@@ -13,6 +13,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 import static java.lang.Thread.sleep;
@@ -450,9 +451,14 @@ class Rects extends JPanel {
         public void actionPerformed(ActionEvent e) {
                 //currentState.setSol2(solution.getAquariums());
                 List<int[]> list = stateManager.getSolution().getPainted();
+                list.sort(new Order());
                 int size = list.size();
                 solver = new Thread(() -> {
+                    int last = -1;
                     for (int step[] :list ) {
+                        if(last == step[0]){
+                            continue;
+                        }
                         currentState.paint(step[0], step[1]);
                         try {
                             revalidate();
@@ -461,11 +467,23 @@ class Rects extends JPanel {
                         } catch (Exception interruptedException) {
                             interruptedException.printStackTrace();
                         }
+                        last = step[0];
                     }
                 }
                 );
                 solver.start();
         }
+
+        class Order implements Comparator<int[]>{
+            @Override
+            public int compare(int[] i1, int[] i2) {
+                if(i1[0]-i2[0] != 0){
+                    return i2[0]-i1[0];
+                }
+                return i2[1]-i1[1];
+            }
+        }
+
     }
 }
 
