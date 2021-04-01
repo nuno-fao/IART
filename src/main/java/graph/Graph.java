@@ -18,7 +18,7 @@ public class Graph {
     /**
      * Container with priority for states not yet explored.
      */
-    private final PriorityQueue<ProvState> statePriorityQueue;
+    private PriorityQueue<ProvState> statePriorityQueue;
 
     /**
      * Search method for solving the problem. Used for ordering the argument statePriorityQueue.
@@ -87,14 +87,18 @@ public class Graph {
      * @return state corresponding to the final solution
      */
     public State solveIterativeDeepening(State initial) {
-        comparator = new DepthFirst();
+        this.comparator = new DepthFirst();
+        statePriorityQueue = new PriorityQueue<>(this.comparator);
         int max = 0;
+        long init  = Runtime.getRuntime().totalMemory()-Runtime.getRuntime().freeMemory();
         while(true){
             pastStates.add(initial.getUK());
             statePriorityQueue.addAll(getLeaves(initial));
+            initial.setDepth(0);
             while (true) {
-                State aux = statePriorityQueue.poll().getState();
-                if (aux != null) {  //check if there are any states on the queue
+                ProvState preState = statePriorityQueue.poll();
+                if (preState != null) {  //check if there are any states on the queue
+                    State aux = preState.getState();
                     String auxState = aux.getUK();
                     if (!pastStates.contains(auxState)) {
                         explored++;
@@ -103,9 +107,9 @@ public class Graph {
                         } else if(aux.getDepth()<max) { //only add new leaves to the queue if it is not on the max depth
                             pastStates.add(auxState);
                             statePriorityQueue.addAll(getLeaves(aux));
-                        /*System.out.println(getExploredStates());
-                        System.out.println(statePriorityQueue.size());
-                        System.out.println();*/
+                            if(getExploredStates()%4000==0) { //print every X explored states
+                                System.out.println(Runtime.getRuntime().totalMemory()-Runtime.getRuntime().freeMemory() - init);
+                            }
                         }
                     }
                 }
@@ -139,7 +143,7 @@ public class Graph {
                     } else {
                         pastStates.add(auxState);
                         statePriorityQueue.addAll(getLeaves(aux));
-                        if(getExploredStates()%2329891==0) { //print every X explored states
+                        if(getExploredStates()%4000==0) { //print every X explored states
                             System.out.println(Runtime.getRuntime().totalMemory()-Runtime.getRuntime().freeMemory() - init);
                         }
                     }
