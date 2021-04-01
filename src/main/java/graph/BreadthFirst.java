@@ -8,7 +8,7 @@ import java.util.List;
 /**
  * Used to specify the cost calculate order according to BreathFirst algo
  */
-public class BreathFirst implements Order {
+public class BreadthFirst implements Order {
     /**
      * Changes the name of this Student.
      * This may involve a lengthy legal process.

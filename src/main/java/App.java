@@ -13,7 +13,7 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Scanner;
+
 import static java.lang.Integer.valueOf;
 
 /**
@@ -50,7 +50,7 @@ public class App {
                     a.stateManager = new StateManager(h.size(), v.size(), h, v, new AStar());
                 }
                 case "breathfirst" -> {
-                    a.stateManager = new StateManager(h.size(), v.size(), h, v, new BreathFirst());
+                    a.stateManager = new StateManager(h.size(), v.size(), h, v, new BreadthFirst());
                 }
                 case "depthfirst" -> {
                     a.stateManager = new StateManager(h.size(), v.size(), h, v, new DepthFirst());
