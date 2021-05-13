@@ -4,6 +4,8 @@ from pygame.locals import *
 SIDE_SIZE = 50
 WHITE=(255,255,255)
 BLUE=(0,225,225)
+RED=(255,0,0)
+POINTER_INIT_POSITION = (75,75)
 
 # Load the board image
 def load_board(mode,rows,cols):
@@ -22,14 +24,19 @@ def load_board_info(mode):
     return rows, cols, row_values, col_values
 
 # Draw all the aquarium that are full of water
-def draw_full_aquariums(screen):
-    pygame.draw.rect(screen,BLUE,(SIDE_SIZE,SIDE_SIZE,SIDE_SIZE,SIDE_SIZE))
+def draw_full_aquariums(interface):
+    # TODO
+    pygame.draw.rect(interface.screen,BLUE,(SIDE_SIZE,SIDE_SIZE,SIDE_SIZE,SIDE_SIZE))
+
+def draw_pointer(interface):
+    pygame.draw.circle(interface.screen, RED, POINTER_INIT_POSITION, 10)
 
 # Draw all the board components
-def draw_board(screen,board):
+def draw_board(interface):
     pygame.display.init()
-    draw_full_aquariums(screen)
-    screen.blit(board,(0,0))
+    draw_full_aquariums(interface)
+    interface.screen.blit(interface.board,(0,0))
+    draw_pointer(interface)
     pygame.display.update()
 
 
@@ -65,4 +72,4 @@ class Aquarium2D:
             if event.type== QUIT:
                 pygame.quit()
                 sys.exit()
-        draw_board(self.screen,self.board)
+        draw_board(self)
