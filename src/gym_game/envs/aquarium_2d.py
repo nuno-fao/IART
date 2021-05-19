@@ -15,6 +15,7 @@ class Aquarium:
         self.nrlevels=0
         self.levels=[]
         self.paintedLevels=0
+        self.bottom=None
     
     def addCell(self, row, col):
         if self.top - len(self.levels) < row :
@@ -39,7 +40,13 @@ class Aquarium:
     
     def setBottom(self):
         self.bottom = self.top - self.nrlevels + 1
-    
+
+    def updateRestrictions(self,horizontals,verticals):
+        for i in range(self.paintedLevels):
+            horizontals[len(horizontals)-i-self.bottom] += len(self.levels[i])
+            for j in self.levels[i]:
+                verticals[j-1]+=1
+        
     def printAquarium(self):
         print('AQUARIUM '+ str(self.id))
         print('TOP '+ str(self.top))
@@ -75,7 +82,14 @@ def load_board_info(mode):
 
     for x in aquariums:
         x.setBottom()
-        #x.printAquarium()
+
+    # test purposes
+    # horizontal = [0]*6
+    # vertical = [0]*6
+    # for x in aquariums:
+    #     x.updateRestrictions(horizontal,vertical)
+    # print('Horizontals' + str(horizontal))
+    # print('Verticals' + str(vertical))
 
     f.close()
     return nrows, ncols, row_values, col_values
