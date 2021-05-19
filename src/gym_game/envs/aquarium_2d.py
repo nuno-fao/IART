@@ -7,6 +7,46 @@ BLUE=(0,225,225)
 RED=(255,0,0)
 POINTER_INIT_POSITION = (75,75)
 
+#aquarium holder
+class Aquarium:
+    def __init__(self,id,top):
+        self.id=id
+        self.top=top
+        self.nrlevels=0
+        self.levels=[]
+        self.paintedLevels=0
+    
+    def addCell(self, row, col):
+        if self.top - len(self.levels) < row :
+            self.levels[0].append(col)
+            #self.levels.append(col)  #This way higher levels are ordered top-down instead
+        else:
+            newlevel=[col]
+            self.levels.insert(0,newlevel)
+            self.nrlevels+=1
+    
+    def paint(self):
+        if self.paintedLevels<self.nrlevels:
+            self.paintedLevels+=1
+            return True
+        return False
+    
+    def unpaint(self):
+        if self.paintedLevels>0:
+            self.paintedLevels-=1
+            return True
+        return False
+    
+    def setBottom(self):
+        self.bottom = self.top - self.nrlevels + 1
+    
+    def printAquarium(self):
+        print('AQUARIUM '+ str(self.id))
+        print('TOP '+ str(self.top))
+        print('BOTTOM '+ str(self.bottom))
+        for x in self.levels:
+            print(x)
+
 # Load the board image
 def load_board(mode,rows,cols):
     image = pygame.image.load(r'../boards/'+mode+'/board1.png')
@@ -16,12 +56,29 @@ def load_board(mode,rows,cols):
 # Load from the board1.txt all the information
 def load_board_info(mode):
     f = open('../boards/'+mode+'/board1.txt', 'r')
-    rows = int(f.readline())
-    cols = int(f.readline())
+    nrows = int(f.readline())
+    ncols = int(f.readline())
     row_values = [int(x) for x in f.readline().split(' ')]
     col_values = [int(x) for x in f.readline().split(' ')]
+    
+    #remove separator
+    f.readline()
+
+    #initiate aquariums
+    aquariums = []
+    for y in range(nrows):
+        for i, x in enumerate(f.readline().split(' ')):
+            index = int(x)
+            if index > len(aquariums) :
+                aquariums.append(Aquarium(index,nrows-y))
+            aquariums[index-1].addCell(nrows-y,i+1)
+
+    for x in aquariums:
+        x.setBottom()
+        #x.printAquarium()
+
     f.close()
-    return rows, cols, row_values, col_values
+    return nrows, ncols, row_values, col_values
 
 # Draw all the aquarium that are full of water
 def draw_full_aquariums(interface):
@@ -36,7 +93,7 @@ def draw_board(interface):
     pygame.display.init()
     draw_full_aquariums(interface)
     interface.screen.blit(interface.board,(0,0))
-    draw_pointer(interface)
+    #draw_pointer(interface)
     pygame.display.update()
 
 
