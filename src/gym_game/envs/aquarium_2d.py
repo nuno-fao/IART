@@ -6,7 +6,6 @@ SIDE_SIZE = 50
 WHITE=(255,255,255)
 BLUE=(0,225,225)
 RED=(255,0,0)
-POINTER_INIT_POSITION = (75,75)
 
 #aquarium holder
 class Aquarium:
@@ -52,6 +51,10 @@ class Aquarium:
         for i in range(self.paintedLevels):
             for j in self.levels[i]:
                 state[len(state)-(i+self.bottom)][j-1]=1
+                
+    def reset(self):
+        while(self.unpaint()):
+            pass
         
     def printAquarium(self):
         print('AQUARIUM '+ str(self.id))
@@ -103,17 +106,22 @@ def load_board_info(mode):
 # Draw all the aquarium that are full of water
 def draw_full_aquariums(interface):
     # TODO
-    pygame.draw.rect(interface.screen,BLUE,(SIDE_SIZE,SIDE_SIZE,SIDE_SIZE,SIDE_SIZE))
-
-def draw_pointer(interface):
-    pygame.draw.circle(interface.screen, RED, POINTER_INIT_POSITION, 10)
+    for aquarium in interface.aquariums:
+        for paintedLevel in range(aquarium.paintedLevels):
+            for col in aquarium.levels[paintedLevel]:
+                    pygame.draw.rect(
+                        interface.screen,
+                        BLUE,
+                        (col*SIDE_SIZE,
+                        (interface.rows - ( (aquarium.bottom + paintedLevel) - 1))*SIDE_SIZE,
+                        SIDE_SIZE,SIDE_SIZE))
+                    #print(col,(aquarium.bottom + paintedLevel))
 
 # Draw all the board components
 def draw_board(interface):
-    pygame.display.init()
+    interface.screen.fill(WHITE)
     draw_full_aquariums(interface)
     interface.screen.blit(interface.board,(0,0))
-    #draw_pointer(interface)
     pygame.display.update()
 
 
@@ -129,35 +137,60 @@ class Aquarium2D:
         
         self.board = load_board(mode,(self.rows+1),(self.cols+1))
         
+        self.currentState = [0]*len(self.aquariums)
+        self.states = [self.currentState] # will contain all the possible states
+        
     def getActionsNr(self):
         return len(self.aquariums)*2 #doubled because of unpaint
 
     def getObservationNr(self):
         aux = 1
         for x in self.aquariums:
-            aux *= len(x.levels)
+            aux *= (len(x.levels) + 1)
         return aux
-        
-    def getStateString(self):
-        state = []
-        for _ in range(self.rows):
-            aux = [0]*self.cols
-            state.append(aux)
-        for x in self.aquariums:
-            x.paintStateString(state)
-        return state
+    
+    # def getStateString(self):
+    #     state = []
+    #     for _ in range(self.rows):
+    #         aux = [0]*self.cols
+    #         state.append(aux)
+    #     for x in self.aquariums:
+    #         x.paintStateString(state)
+    #     return state
 
+    def reset(self):
+        self.currentState = [0]*len(self.aquariums)
+        for aquarium in self.aquariums:
+            aquarium.reset()
+        
     # deals with an action using the information in table Q
     def action(self,action):
 
         if (action%2) == 0 :
-            self.aquariums[action/2].paint()
+            if(self.aquariums[action//2].paint()):
+                # when paint action is possible
+                self.reward = -1;
+                self.currentState[action//2] = self.aquariums[action//2].paintedLevels
+                if(self.currentState not in self.states):
+                    self.states.append(self.currentState.copy())
+            else:
+                # otherwise
+                self.reward = -2;
         else:
-            self.aquariums[(action-1)/2].unpaint()
+            if(self.aquariums[(action-1)//2].unpaint()):
+                # when unpaint action is possible
+                self.reward = -1;
+                self.currentState[(action-1)//2] = self.aquariums[(action-1)//2].paintedLevels
+                if(self.currentState not in self.states):
+                    self.states.append(self.currentState.copy())
+            else:
+                # otherwise
+                self.reward = -2;
 
         
     # return reward
-    #def evaluate(self):
+    def evaluate(self):
+        return self.reward;
     
     # return game over or not
     def is_done(self):
@@ -173,12 +206,14 @@ class Aquarium2D:
         for i in range(self.cols):
             if(vertical[i]!=self.col_values[i]):
                 return False
+        # reward when the puzzle is successfully completed
+        self.reward = 100;
         return True
         
     
     # returns all the information that can be observable
     def observe(self):
-        return self.getStateString()
+        return self.states.index(self.currentState)
         
         
     # render game interface

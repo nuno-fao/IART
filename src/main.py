@@ -2,11 +2,9 @@ import gym
 import gym_game
 import random
 import numpy as np
+import time
 
-
-if __name__ == "__main__":
-    env = gym.make('Aquarium-v0',mode='6x6_Easy')
-    
+def q_learning(env):
     # Create Q-table
     action_size = env.action_space.n
     state_size = env.observation_space.n
@@ -81,3 +79,38 @@ if __name__ == "__main__":
     print ("Score/time: " +  str(sum(rewards)/total_episodes))
     print(qtable)
     print(epsilon)
+    
+    # Exploit!
+
+    #All the episodes are the same taking the maximum of Qtable value every time
+    env.reset()
+    
+    for episode in range(5):
+        state = env.reset()
+        step = 0
+        done = False
+     
+        for step in range(max_steps):
+            env.render()
+            # Take the action (index) that have the maximum expected future reward given that state
+            action = np.argmax(qtable[state,:])
+            
+            new_state, reward, done, info = env.step(action)
+            
+            if done:
+                break
+            state = new_state
+            
+            # Making the learning path more visible
+            time.sleep(1);
+        env.render()
+    env.close()
+
+if __name__ == "__main__":
+    env = gym.make('Aquarium-v0',mode='6x6_Easy')
+    q_learning(env)
+    
+    while True:
+        env.render()
+    
+    

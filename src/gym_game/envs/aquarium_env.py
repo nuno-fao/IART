@@ -11,18 +11,16 @@ class AquariumEnv(gym.Env):
         self.observation_space = spaces.Discrete(self.game.getObservationNr())
         #self.qtable = np.zeros((self.observation_space, self.action_space))
         
-        
     def reset(self):
-        del self.game
-        self.game = Aquarium2D()
+        self.game.reset()
         obs = self.game.observe()
         return obs
         
     def step(self, action):
         self.game.action(action)
         obs = self.game.observe()
-        reward = self.game.reward()
         done = self.game.is_done()
+        reward = self.game.evaluate()
         return obs , reward, done, {}
         
     def render(self , mode='human'):
