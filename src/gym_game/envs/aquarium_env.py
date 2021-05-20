@@ -9,7 +9,6 @@ class AquariumEnv(gym.Env):
         self.game = Aquarium2D(mode)
         self.action_space = spaces.Discrete(self.game.getActionsNr())
         self.observation_space = spaces.Discrete(self.game.getObservationNr())
-        #self.qtable = np.zeros((self.observation_space, self.action_space))
         
     def reset(self):
         self.game.reset()
@@ -26,10 +25,3 @@ class AquariumEnv(gym.Env):
     def render(self , mode='human'):
         self.game.view()        
         
-
-    def close(self):
-        """Performs any necessary cleanup.
-        Environments will automatically close() themselves when
-        garbage collected or when the program exits.
-        """
-        pass

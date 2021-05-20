@@ -92,14 +92,6 @@ def load_board_info(mode):
     for x in aquariums:
         x.setBottom()
 
-    # test purposes
-    # horizontal = [0]*6
-    # vertical = [0]*6
-    # for x in aquariums:
-    #     x.updateRestrictions(horizontal,vertical)
-    # print('Horizontals' + str(horizontal))
-    # print('Verticals' + str(vertical))
-
     f.close()
     return nrows, ncols, row_values, col_values, aquariums
 
@@ -175,7 +167,7 @@ class Aquarium2D:
                     self.states.append(self.currentState.copy())
             else:
                 # otherwise
-                self.reward = -2;
+                self.reward = -1;
         else:
             if(self.aquariums[(action-1)//2].unpaint()):
                 # when unpaint action is possible
@@ -185,7 +177,7 @@ class Aquarium2D:
                     self.states.append(self.currentState.copy())
             else:
                 # otherwise
-                self.reward = -2;
+                self.reward = -1;
 
         
     # return reward
