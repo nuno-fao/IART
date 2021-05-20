@@ -1,14 +1,15 @@
 import gym
-from gym import spaces
 import numpy as np
+from gym import spaces
 from gym_game.envs.aquarium_2d import Aquarium2D
 
 class AquariumEnv(gym.Env):
     
     def __init__(self,mode):
         self.game = Aquarium2D(mode)
-        self.action_space = spaces.Discrete(6)
-        self.observation_space = spaces.Discrete(20)
+        self.action_space = spaces.Discrete(self.game.getActionsNr())
+        self.observation_space = spaces.Discrete(self.game.getObservationNr())
+        #self.qtable = np.zeros((self.observation_space, self.action_space))
         
         
     def reset(self):

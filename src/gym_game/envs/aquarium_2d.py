@@ -1,5 +1,6 @@
 import pygame, sys
 from pygame.locals import *
+import numpy as np
 
 SIDE_SIZE = 50
 WHITE=(255,255,255)
@@ -46,6 +47,11 @@ class Aquarium:
             horizontals[len(horizontals)-i-self.bottom] += len(self.levels[i])
             for j in self.levels[i]:
                 verticals[j-1]+=1
+
+    def paintStateString(self,state):
+        for i in range(self.paintedLevels):
+            for j in self.levels[i]:
+                state[len(state)-(i+self.bottom)][j-1]=1
         
     def printAquarium(self):
         print('AQUARIUM '+ str(self.id))
@@ -92,7 +98,7 @@ def load_board_info(mode):
     # print('Verticals' + str(vertical))
 
     f.close()
-    return nrows, ncols, row_values, col_values
+    return nrows, ncols, row_values, col_values, aquariums
 
 # Draw all the aquarium that are full of water
 def draw_full_aquariums(interface):
@@ -114,8 +120,8 @@ def draw_board(interface):
 class Aquarium2D:
     # init pygame library
     def __init__(self,mode):
-        self.rows , self.cols, self.row_values, self.col_values = load_board_info(mode)
-        
+        self.rows , self.cols, self.row_values, self.col_values, self.aquariums = load_board_info(mode)
+
         pygame.init()
         pygame.display.set_caption('Aquarium')
         self.screen = pygame.display.set_mode(((self.rows+1)*SIDE_SIZE,(self.cols+1)*SIDE_SIZE))
@@ -123,19 +129,57 @@ class Aquarium2D:
         
         self.board = load_board(mode,(self.rows+1),(self.cols+1))
         
-       
+    def getActionsNr(self):
+        return len(self.aquariums)*2 #doubled because of unpaint
+
+    def getObservationNr(self):
+        aux = 1
+        for x in self.aquariums:
+            aux *= len(x.levels)
+        return aux
         
+    def getStateString(self):
+        state = []
+        for _ in range(self.rows):
+            aux = [0]*self.cols
+            state.append(aux)
+        for x in self.aquariums:
+            x.paintStateString(state)
+        return state
+
     # deals with an action using the information in table Q
-    #def action(self,action):
+    def action(self,action):
+
+        if (action%2) == 0 :
+            self.aquariums[action/2].paint()
+        else:
+            self.aquariums[(action-1)/2].unpaint()
+
         
     # return reward
     #def evaluate(self):
     
     # return game over or not
-    #def is_done(self):
+    def is_done(self):
+        horizontal = [0]*self.rows
+        vertical = [0]*self.cols
+        for x in self.aquariums:
+            x.updateRestrictions(horizontal,vertical)
+
+        for i in range(self.rows):
+            if(horizontal[i]!=self.row_values[i]):
+                return False
+            
+        for i in range(self.cols):
+            if(vertical[i]!=self.col_values[i]):
+                return False
+        return True
+        
     
     # returns all the information that can be observable
-    #def observe(self):
+    def observe(self):
+        return self.getStateString()
+        
         
     # render game interface
     def view(self):
