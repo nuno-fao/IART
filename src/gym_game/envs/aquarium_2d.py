@@ -122,15 +122,21 @@ class Aquarium2D:
     def __init__(self,mode):
         self.rows , self.cols, self.row_values, self.col_values, self.aquariums = load_board_info(mode)
 
-        pygame.init()
-        pygame.display.set_caption('Aquarium')
-        self.screen = pygame.display.set_mode(((self.rows+1)*SIDE_SIZE,(self.cols+1)*SIDE_SIZE))
-        self.screen.fill(WHITE)
+        #pygame.init()
+        #pygame.display.set_caption('Aquarium')
+        #self.screen = pygame.display.set_mode(((self.rows+1)*SIDE_SIZE,(self.cols+1)*SIDE_SIZE))
+        #self.screen.fill(WHITE)
         
         self.board = load_board(mode,(self.rows+1),(self.cols+1))
         
         self.currentState = [0]*len(self.aquariums)
         self.states = [self.currentState] # will contain all the possible states
+        
+    def init(self):
+    	pygame.init()
+    	pygame.display.set_caption('Aquarium')
+    	self.screen = pygame.display.set_mode(((self.rows+1)*SIDE_SIZE,(self.cols+1)*SIDE_SIZE))
+    	self.screen.fill(WHITE)
         
     def getActionsNr(self):
         return len(self.aquariums)*2 #doubled because of unpaint

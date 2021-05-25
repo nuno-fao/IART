@@ -84,6 +84,7 @@ def q_learning(env):
 
     #All the episodes are the same taking the maximum of Qtable value every time
     env.reset()
+    env.init_view()
     
     for episode in range(1):
         state = env.reset()
@@ -200,6 +201,7 @@ def sarsa(env):
 
     #All the episodes are the same taking the maximum of Qtable value every time
     env.reset()
+    env.init_view()
     
     for episode in range(1):
         state = env.reset()
@@ -224,9 +226,12 @@ def sarsa(env):
         time.sleep(3)
 
 if __name__ == "__main__":
-    env = gym.make('Aquarium-v0',mode='6x6_Easy')
-    #q_learning(env)
-    sarsa(env)
+    start_time = time.time()
+    env = gym.make('Aquarium-v0',mode='6x6_Hard')
+    print("Wait for it, it's gonna be Legen, wait for it, dary")
+    q_learning(env)
+    #sarsa(env)
+    print("--- %s seconds ---" % (time.time() - start_time))
     
     while True:
         env.render()

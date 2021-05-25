@@ -9,6 +9,7 @@ class AquariumEnv(gym.Env):
         self.game = Aquarium2D(mode)
         self.action_space = spaces.Discrete(self.game.getActionsNr())
         self.observation_space = spaces.Discrete(self.game.getObservationNr())
+        self.initiated = False
         
     def reset(self):
         self.game.reset()
@@ -23,5 +24,10 @@ class AquariumEnv(gym.Env):
         return obs , reward, done, {}
         
     def render(self , mode='human'):
-        self.game.view()        
+        if self.initiated:
+        	self.game.view()   
+    
+    def init_view(self):
+    	self.initiated = True
+    	self.game.init()     
         
