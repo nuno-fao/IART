@@ -3,6 +3,7 @@ import gym_game
 import random
 import numpy as np
 import time
+import sys
 
 def q_learning(env):
     # Create Q-table
@@ -224,9 +225,21 @@ def sarsa(env):
         time.sleep(3)
 
 if __name__ == "__main__":
+    
+    if len(sys.argv)!=2:
+        print("Usage: python main.py [1-2]")
+        sys.exit()
+    
     env = gym.make('Aquarium-v0',mode='6x6_Easy')
-    #q_learning(env)
-    sarsa(env)
+
+    try:
+        if(int(sys.argv[1])==1):
+            q_learning(env)
+        elif(int(sys.argv[1])==2):
+            sarsa(env)
+    except ValueError:
+        print("arg1 must be a number between 1 and 2")
+        sys.exit()
     
     while True:
         env.render()
