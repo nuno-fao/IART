@@ -6,6 +6,7 @@ import time
 import sys
 
 def q_learning(env):
+    start_time = time.time()
     # Create Q-table
     action_size = env.action_space.n
     state_size = env.observation_space.n
@@ -85,6 +86,7 @@ def q_learning(env):
 
     #All the episodes are the same taking the maximum of Qtable value every time
     env.reset()
+    print("--- %s seconds ---" % (time.time() - start_time))
     env.init_view()
     
     for episode in range(1):
@@ -110,6 +112,7 @@ def q_learning(env):
         time.sleep(3)
 
 def sarsa(env):
+    start_time = time.time()
     # Create Q-table
     action_size = env.action_space.n
     state_size = env.observation_space.n
@@ -202,6 +205,7 @@ def sarsa(env):
 
     #All the episodes are the same taking the maximum of Qtable value every time
     env.reset()
+    print("--- %s seconds ---" % (time.time() - start_time))
     env.init_view()
     
     for episode in range(1):
@@ -227,22 +231,20 @@ def sarsa(env):
         time.sleep(3)
 
 if __name__ == "__main__":    
-    start_time = time.time()
-    if len(sys.argv)!=2:
+    if len(sys.argv)!=3:
         print("Usage: python main.py [1-2]")
         sys.exit()
     
-    env = gym.make('Aquarium-v0',mode='6x6_Easy')
+    env = gym.make('Aquarium-v0',mode=sys.argv[1])
 
     try:
-        if(int(sys.argv[1])==1):
+        if(int(sys.argv[2])==1):
             q_learning(env)
-        elif(int(sys.argv[1])==2):
+        elif(int(sys.argv[2])==2):
             sarsa(env)
     except ValueError:
         print("arg1 must be a number between 1 and 2")
         sys.exit()
-    print("--- %s seconds ---" % (time.time() - start_time))
     
     while True:
         env.render()
