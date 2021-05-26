@@ -17,7 +17,7 @@ Instructions to execute the code:
 	
 	python3 [Board] 2 -> to use Sarsa algorithm
 
-	[Board] must be on of the following boards:
+	[Board] must be one of the following boards:
 		- 3x3
 		- 4x4
 		- 5x5
