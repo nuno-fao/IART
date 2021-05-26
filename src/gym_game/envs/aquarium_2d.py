@@ -17,6 +17,7 @@ class Aquarium:
         self.paintedLevels=0
         self.bottom=None
     
+    # add a cell to this aquarium
     def addCell(self, row, col):
         if self.top - len(self.levels) < row :
             self.levels[0].append(col)
@@ -26,43 +27,38 @@ class Aquarium:
             self.levels.insert(0,newlevel)
             self.nrlevels+=1
     
+    # paint one aquarium level
+    # returns true if it was possible to paint one level and false otherwise
     def paint(self):
         if self.paintedLevels<self.nrlevels:
             self.paintedLevels+=1
             return True
         return False
     
+    # unpaint one aquarium level
+    # returns true if it was possible to unpaint one level and false otherwise
     def unpaint(self):
         if self.paintedLevels>0:
             self.paintedLevels-=1
             return True
         return False
     
+    # calculates the aquarium bottom
     def setBottom(self):
         self.bottom = self.top - self.nrlevels + 1
-
+    
+    # updates the restrictions imposed on the rows and columns 
     def updateRestrictions(self,horizontals,verticals):
         for i in range(self.paintedLevels):
             horizontals[len(horizontals)-i-self.bottom] += len(self.levels[i])
             for j in self.levels[i]:
                 verticals[j-1]+=1
-
-    def paintStateString(self,state):
-        for i in range(self.paintedLevels):
-            for j in self.levels[i]:
-                state[len(state)-(i+self.bottom)][j-1]=1
-                
+    
+    # unpaints all the level while is possible
     def reset(self):
         while(self.unpaint()):
             pass
         
-    def printAquarium(self):
-        print('AQUARIUM '+ str(self.id))
-        print('TOP '+ str(self.top))
-        print('BOTTOM '+ str(self.bottom))
-        for x in self.levels:
-            print(x)
-
 # Load the board image
 def load_board(mode,rows,cols):
     image = pygame.image.load(r'../boards/'+mode+'/board1.png')
@@ -97,7 +93,6 @@ def load_board_info(mode):
 
 # Draw all the aquarium that are full of water
 def draw_full_aquariums(interface):
-    # TODO
     for aquarium in interface.aquariums:
         for paintedLevel in range(aquarium.paintedLevels):
             for col in aquarium.levels[paintedLevel]:
@@ -107,7 +102,6 @@ def draw_full_aquariums(interface):
                         (col*SIDE_SIZE,
                         (interface.rows - ( (aquarium.bottom + paintedLevel) - 1))*SIDE_SIZE,
                         SIDE_SIZE,SIDE_SIZE))
-                    #print(col,(aquarium.bottom + paintedLevel))
 
 # Draw all the board components
 def draw_board(interface):
@@ -121,41 +115,32 @@ class Aquarium2D:
     # init pygame library
     def __init__(self,mode):
         self.rows , self.cols, self.row_values, self.col_values, self.aquariums = load_board_info(mode)
-
-        #pygame.init()
-        #pygame.display.set_caption('Aquarium')
-        #self.screen = pygame.display.set_mode(((self.rows+1)*SIDE_SIZE,(self.cols+1)*SIDE_SIZE))
-        #self.screen.fill(WHITE)
-        
+ 
         self.board = load_board(mode,(self.rows+1),(self.cols+1))
         
         self.currentState = [0]*len(self.aquariums)
         self.states = [self.currentState] # will contain all the possible states
-        
-    def init(self):
+    
+    # initiates the pygame window 
+    def init_view(self):
     	pygame.init()
     	pygame.display.set_caption('Aquarium')
     	self.screen = pygame.display.set_mode(((self.rows+1)*SIDE_SIZE,(self.cols+1)*SIDE_SIZE))
     	self.screen.fill(WHITE)
-        
+     
+    # returns the number of possible actions
     def getActionsNr(self):
         return len(self.aquariums)*2 #doubled because of unpaint
-
+    
+    # returns the number of possible states
     def getObservationNr(self):
         aux = 1
         for x in self.aquariums:
             aux *= (len(x.levels) + 1)
         return aux
     
-    # def getStateString(self):
-    #     state = []
-    #     for _ in range(self.rows):
-    #         aux = [0]*self.cols
-    #         state.append(aux)
-    #     for x in self.aquariums:
-    #         x.paintStateString(state)
-    #     return state
-
+    # changes the current state to the initial state
+    # unpaint all the aquarium that are painted
     def reset(self):
         self.currentState = [0]*len(self.aquariums)
         for aquarium in self.aquariums:
@@ -163,7 +148,6 @@ class Aquarium2D:
         
     # deals with an action using the information in table Q
     def action(self,action):
-
         if (action%2) == 0 :
             if(self.aquariums[action//2].paint()):
                 # when paint action is possible
