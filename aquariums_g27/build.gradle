@@ -1,0 +1,64 @@
+plugins {
+    id 'java'
+    id 'application'
+}
+
+
+group 'org.example'
+version '1.0-SNAPSHOT'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.6.0'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine'
+}
+
+test {
+    useJUnitPlatform()
+}
+
+
+application {
+    mainClass = 'App'
+}
+
+task astar(type: JavaExec) {
+    classpath sourceSets.main.runtimeClasspath
+    maxHeapSize = "12g"
+    main = "App"
+    args "astar"
+}
+
+task breathfirst(type: JavaExec) {
+    classpath sourceSets.main.runtimeClasspath
+    maxHeapSize = "12g"
+    main = "App"
+    args "breathfirst"
+}
+
+task depthfirst(type: JavaExec) {
+    classpath sourceSets.main.runtimeClasspath
+    main = "App"
+    args "depthfirst"
+}
+
+task greedy(type: JavaExec) {
+    classpath sourceSets.main.runtimeClasspath
+    main = "App"
+    args "greedy"
+}
+
+task uniform(type: JavaExec) {
+    classpath sourceSets.main.runtimeClasspath
+    main = "App"
+    args "uniform"
+}
+
+task iterative(type: JavaExec) {
+    classpath sourceSets.main.runtimeClasspath
+    main = "App"
+    args "iterative"
+}
